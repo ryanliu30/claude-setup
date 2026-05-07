@@ -5,7 +5,7 @@
 
 set -e
 
-REPO_URL="https://github.com/<your-username>/claude-setup"
+REPO_URL="https://github.com/ryanliu30/claude-setup"
 TARGET="$HOME/.claude"
 TMP_DIR=$(mktemp -d)
 
