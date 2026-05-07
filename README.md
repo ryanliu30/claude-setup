@@ -38,6 +38,17 @@ bash claude-setup/setup.sh
 | `/learn` | Extract reusable patterns from the session into skill files |
 | `/test-coverage` | Measure coverage, generate tests for under-covered files |
 
+## Skills
+
+Reference guides installed to `~/.claude/skills/`:
+
+| Skill | Description |
+|-------|-------------|
+| `python-patterns` | Pythonic idioms, type hints, dataclasses, generators, concurrency |
+| `python-testing` | pytest fixtures, parametrize, mocking, ML shape checks, GPU marks |
+| `cpp-coding-standards` | C++ Core Guidelines — RAII, smart pointers, naming, concurrency |
+| `cpp-testing` | GoogleTest/GMock, CMake/CTest, sanitizers, dependency injection |
+
 ## Rules (auto-loaded by file path)
 
 ```

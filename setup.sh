@@ -20,7 +20,7 @@ else
   SRC="$(cd "$(dirname "$0")" && pwd)"
 fi
 
-mkdir -p "$TARGET/commands" "$TARGET/rules/common" "$TARGET/rules/python" "$TARGET/rules/cpp"
+mkdir -p "$TARGET/commands" "$TARGET/rules/common" "$TARGET/rules/python" "$TARGET/rules/cpp" "$TARGET/skills"
 
 # Core files
 cp "$SRC/CLAUDE.md"      "$TARGET/CLAUDE.md"
@@ -33,6 +33,9 @@ cp "$SRC/commands/"*.md  "$TARGET/commands/"
 cp "$SRC/rules/common/"*.md   "$TARGET/rules/common/"
 cp "$SRC/rules/python/"*.md   "$TARGET/rules/python/"
 cp "$SRC/rules/cpp/"*.md      "$TARGET/rules/cpp/"
+
+# Skills
+cp "$SRC/skills/"*.md         "$TARGET/skills/"
 
 # Cleanup temp dir if used
 [ -d "$TMP_DIR/claude-setup" ] && rm -rf "$TMP_DIR"
