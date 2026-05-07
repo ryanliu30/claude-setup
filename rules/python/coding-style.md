@@ -74,7 +74,43 @@ cython-lint **/*.pyx
 
 ## Docstrings
 
-Google style:
+Google style. **After every edit to a source file, verify that all three levels of docstring are accurate. This is mandatory, not optional.**
+
+### After every source file edit
+
+1. **Module docstring** — top of file. Check that the summary still describes the file's purpose and that the public API list (if present) reflects any added/removed/renamed symbols.
+2. **Class docstring** — below `class` line. Check that the description, `Attributes:`, and any usage examples still match the class's current responsibilities and fields.
+3. **Method/function docstring** — check that `Args:`, `Returns:`, and `Raises:` match the current signature and behavior. Update if parameters were added, removed, renamed, or changed type.
+
+If a docstring is missing where one is required (see below), add it.
+
+### When docstrings are required
+
+| Level | Required when |
+|-------|--------------|
+| Module | always, for every `src/` file |
+| Class | always, for every public class |
+| Method/function | any public function; any non-trivial private function |
+| Skip | trivial getters/setters, `__repr__`, private one-liners |
+
+### Format
+
+```python
+"""One-line summary (imperative mood, ≤79 chars).
+
+Extended description if the why or how is non-obvious.
+"""
+```
+
+```python
+class TransformerBlock:
+    """Single transformer block with self-attention and FFN.
+
+    Attributes:
+        hidden_dim: Dimension of the model's hidden states.
+        num_heads: Number of attention heads.
+    """
+```
 
 ```python
 def load_checkpoint(path: str, device: str = "cpu") -> dict:
@@ -92,4 +128,5 @@ def load_checkpoint(path: str, device: str = "cpu") -> dict:
     """
 ```
 
-Skip docstrings for trivial getters and private helpers.
+- Tensor shapes go in `Args:`/`Returns:` inline: `q: Query of shape (B, H, T, D).`
+- Skip docstrings for trivial getters and private one-liners.
