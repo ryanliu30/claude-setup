@@ -25,8 +25,6 @@ mkdir -p "$TARGET/commands" "$TARGET/rules/common" "$TARGET/rules/python" "$TARG
 # Core files
 cp "$SRC/CLAUDE.md"      "$TARGET/CLAUDE.md"
 cp "$SRC/settings.json"  "$TARGET/settings.json"
-cp "$SRC/statusline.sh"  "$TARGET/statusline.sh"
-chmod +x "$TARGET/statusline.sh"
 
 # Commands
 cp "$SRC/commands/"*.md  "$TARGET/commands/"
@@ -43,7 +41,6 @@ echo "✓ Done. Files installed to $TARGET"
 echo ""
 echo "  CLAUDE.md   → global guidelines"
 echo "  settings.json → permissions + hooks"
-echo "  statusline.sh → context/token status bar"
 echo "  commands/   → /commit /check /plan /code-review /python-review /cpp-review /build-fix /learn /test-coverage"
 echo "  rules/      → coding standards for Python, C++, and common practices"
 echo ""

@@ -20,8 +20,7 @@ bash claude-setup/setup.sh
 | File / Dir | Purpose |
 |-----------|---------|
 | `CLAUDE.md` | Global guidelines: ML patterns, C++/Cython style, writing tone, git rules |
-| `settings.json` | Permissions (allow/ask), hooks, status line |
-| `statusline.sh` | Context window progress bar, token counts, git branch |
+| `settings.json` | Permissions (allow/ask), hooks |
 | `commands/` | Slash commands (see below) |
 | `rules/` | Auto-loaded coding standards by language |
 
