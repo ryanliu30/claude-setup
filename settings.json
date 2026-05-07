@@ -120,15 +120,14 @@
     "defaultMode": "acceptEdits"
   },
   "hooks": {
-    "PostToolUse": [
+    "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'f=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"; case \"$f\" in *.py) cd \"$(dirname $f)\" && ruff check --quiet \"$f\" 2>/dev/null || true ;; esac'",
-            "async": true,
-            "description": "Silently lint Python files after edit"
+            "command": "bash -c 'echo \"$CLAUDE_TOOL_INPUT_COMMAND\" | grep -qE \"^git commit\" || exit 0; root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0; [ -f \"$root/.pre-commit-config.yaml\" ] || exit 0; cd \"$root\" && pre-commit run --files $(git diff --cached --name-only --diff-filter=ACM | tr \"\\n\" \" \")'",
+            "description": "Run pre-commit on staged files before commit"
           }
         ]
       }
@@ -146,5 +145,5 @@
       }
     ]
   },
-  "effortLevel": "medium"
+  "effortLevel": "high"
 }

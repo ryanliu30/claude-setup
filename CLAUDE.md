@@ -17,6 +17,7 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 ### 2. Pre-commit
 - Always run `pre-commit` if it exists before committing.
 - If no hook exists, run the project's test suite manually.
+- Never invoke `ruff`, `cython-lint`, `black`, `isort`, or other formatters/linters directly as shell commands. Run them exclusively through `pre-commit run`.
 
 ---
 
@@ -40,7 +41,7 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 - **Configuration**: Use **Hydra + OmegaConf** for ML configuration. Define structured configs with `@dataclass` (no `frozen=True` — Hydra needs mutability for config composition) and access them at runtime as `DictConfig`. No bare `argparse` dicts, no `pydantic` models for config.
 - **Logging**: Use Python's `logging` module, not `print`. In ML training, use `tqdm` for progress and a proper experiment tracker (W&B, MLflow, or at minimum TensorBoard).
 - **Performance**: Profile before optimizing. Use vectorized NumPy/PyTorch ops; avoid Python-level loops over large arrays.
-- **Formatting**: `black` + `isort` + `ruff`. Run before committing.
+- **Formatting**: `black` + `isort` + `ruff` — configured as pre-commit hooks and run via `pre-commit run`, never invoked directly.
 
 #### Testing
 - Tests go in `tests/` mirroring `src/` structure exactly.
