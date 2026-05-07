@@ -9,18 +9,13 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 **CRITICAL**: Before running any Python scripts, tests, or installing packages, ensure the correct environment is active.
 
 ### 1. Environment Priority
-1. **Local venv first**: Look for `.venv`, `venv`, or `env` in the project root.
-   - Activate with `source .venv/bin/activate` or use `uv run <cmd>`.
-2. **Conda fallback**: If no local venv, infer the environment from the project folder name or a `environment.yml`.
+1. **Conda Environment**: Check if in the project README.md contains conda environment installation instructions. If so, use the conda environment. Otherwise, infer the potential environment name from the project name.
+   - Use `which python` to check if an environment is active. If so, proceed to execution.
    - Run `conda activate <name>`. If unsure, run `conda env list`.
-3. **Never use the base environment** for project work — always prefer isolation.
+2. **Never use the base environment** for project work — always prefer isolation.
 
-### 2. Verification
-- Run `which python` when uncertain; confirm it matches the expected interpreter.
-- Check `python --version` for compatibility with the project's minimum version.
-
-### 3. Pre-commit
-- Always run `./.git/hooks/pre-commit` if it exists before committing.
+### 2. Pre-commit
+- Always run `pre-commit` if it exists before committing.
 - If no hook exists, run the project's test suite manually.
 
 ---
@@ -71,16 +66,6 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 - Declare C types with `cdef`; use `cpdef` only when Python access is needed.
 - Add `# cython: boundscheck=False, wraparound=False` at the top of performance-critical `.pyx` files only after correctness is verified.
 - Test both the Cython extension and a pure-Python fallback if one exists.
-
----
-
-### Context C: Coursework / Problem Sets
-
-*Trigger: "pset", "homework", "assignment", "class", course number.*
-
-- Keep scripts linear and simple. No over-engineered abstractions.
-- Comments should explain *why*, not *what*.
-- Writing tone: direct, first-person or neutral. No "AI accent" (no "It is worth noting," "delve into," "As an AI...").
 
 ---
 
