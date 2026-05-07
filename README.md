@@ -5,13 +5,13 @@ Personal Claude Code configuration for ML/research Python development with occas
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<your-username>/claude-setup/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ryanliu30/claude-setup/main/setup.sh | bash
 ```
 
 Or clone and run locally:
 
 ```bash
-git clone https://github.com/<your-username>/claude-setup
+git clone https://github.com/ryanliu30/claude-setup
 bash claude-setup/setup.sh
 ```
 
