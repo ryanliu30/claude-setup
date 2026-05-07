@@ -11,13 +11,15 @@ TMP_DIR=$(mktemp -d)
 
 echo "→ Installing claude-setup to $TARGET"
 
-# If running via curl (no local files), clone first
-if [ ! -f "$(dirname "$0")/CLAUDE.md" ]; then
+# If running via curl (no local files), clone first.
+# $BASH_SOURCE[0] is empty when piped through bash, but set to the script path
+# when invoked directly — so we use it rather than $0 to detect curl-pipe mode.
+if [[ -n "${BASH_SOURCE[0]}" && -f "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/CLAUDE.md" ]]; then
+  SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+else
   echo "  Cloning repo to $TMP_DIR..."
   git clone --depth=1 "$REPO_URL" "$TMP_DIR/claude-setup"
   SRC="$TMP_DIR/claude-setup"
-else
-  SRC="$(cd "$(dirname "$0")" && pwd)"
 fi
 
 mkdir -p "$TARGET/commands" "$TARGET/rules/common" "$TARGET/rules/python" "$TARGET/rules/cpp" "$TARGET/skills"
