@@ -20,10 +20,9 @@ Run the following tools (skip gracefully if not installed):
 
 ```bash
 ruff check <files>
-mypy <files> --ignore-missing-imports
-black --check <files>
-isort --check <files>
-bandit -r <files> -ll   # security scan, low severity and above
+ruff format --check <files>
+cython-lint <pyx_files>   # if any .pyx files changed
+bandit -r <files> -ll     # security scan, low severity and above (if installed)
 ```
 
 ## Step 3: Review by Severity

@@ -35,14 +35,21 @@ class Batch(NamedTuple):
 
 ## Formatting Toolchain
 
-1. `black` — code formatting (line length 88).
-2. `isort` — import sorting (compatible with black: `profile = "black"`).
-3. `ruff` — fast linting (superset of flake8, pyupgrade, etc.).
-4. `mypy` — static type checking (`strict = true` preferred).
+Pre-commit hooks (run automatically on commit):
 
-Run before every commit:
+| Hook | Command | Scope |
+|------|---------|-------|
+| `ruff-check` | `ruff check --fix` | `src/` Python files |
+| `ruff-format` | `ruff format` | `src/` Python files |
+| `cython-lint` | `cython-lint` | all `.pyx` files |
+
+`ruff` handles both formatting and linting — no `black`, no `isort`, no separate flake8. Do not introduce those tools or suggest them.
+
+To run manually before committing:
 ```bash
-ruff format . && isort . && ruff check . && mypy .
+ruff check --fix src/
+ruff format src/
+cython-lint **/*.pyx
 ```
 
 ## ML / NumPy Conventions

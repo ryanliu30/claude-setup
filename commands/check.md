@@ -13,7 +13,7 @@ Run the project's quality checks, auto-fix everything safe to fix, and report wh
    - Bare Python project → run `ruff check . && python -m pytest`
 
 2. Capture the full output. For each failure category, apply fixes where safe:
-   - **Formatting** (`ruff format`, `black`, `isort`): always auto-fix.
+   - **Formatting** (`ruff format`, `ruff check --fix`): always auto-fix.
    - **Linting**: fix rule violations that don't require logic changes (unused imports, style). Skip anything that would alter behavior.
    - **Type errors**: fix annotation issues properly.
      - In `src/`: **never** use `# type: ignore` — fix types correctly or flag as needing manual attention.

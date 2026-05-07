@@ -42,3 +42,14 @@ Prefer immutability: create new objects instead of mutating existing ones. Preve
 ## Comments
 
 Write no comments by default. Add one only when the WHY is non-obvious: a hidden constraint, a workaround for a specific bug, a subtle invariant. Never explain WHAT the code does.
+
+## Typing
+
+- Use type hints extensively throughout your Python implementation. 
+- Avoid using Any or Optional, infer the type by checking the references to the methods.
+- When more than three types are possible, instead of using |, create new container dataclass or separate the methods
+
+## Documentation
+
+- In all source code files, there should be a README.md summarizing the data flow and the public methods.
+- Whenever a file is updated, check README to see if any changes are required for the README documentation.
