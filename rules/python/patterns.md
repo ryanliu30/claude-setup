@@ -21,12 +21,15 @@ class Dataset(Protocol):
     def __getitem__(self, idx: int) -> dict: ...
 ```
 
-## Dataclasses as Configuration
+## ML Configuration — Hydra + OmegaConf
 
-Use `dataclass` for configs; `frozen=True` for immutability:
+Use **Hydra** for ML config management. Define structured configs as plain `@dataclass` (no `frozen=True` — Hydra requires mutability for config composition and override):
 
 ```python
 from dataclasses import dataclass, field
+from hydra.core.config_store import ConfigStore
+from omegaconf import DictConfig, MISSING
+import hydra
 
 @dataclass
 class TrainConfig:
@@ -34,8 +37,23 @@ class TrainConfig:
     batch_size: int = 32
     epochs: int = 100
     optimizer: str = "adamw"
-    extra_args: dict = field(default_factory=dict)
+
+@dataclass
+class Config:
+    train: TrainConfig = field(default_factory=TrainConfig)
+    data_dir: str = MISSING   # must be provided at runtime
+
+cs = ConfigStore.instance()
+cs.store(name="config", node=Config)
+
+@hydra.main(config_path="conf", config_name="config", version_base=None)
+def main(cfg: DictConfig) -> None:
+    print(cfg.train.lr)   # override via CLI: train.lr=1e-3
 ```
+
+Access runtime config as `DictConfig`; convert to a typed object with `OmegaConf.structured()` when needed. Never use bare `argparse` dicts or `pydantic` models for ML config.
+
+Use plain `@dataclass` (without Hydra) only for non-config data containers (DTOs, result structs). For those, `frozen=True` is appropriate.
 
 ## Context Managers
 

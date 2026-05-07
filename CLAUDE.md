@@ -42,7 +42,7 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
   - Prefer `einops` for readable tensor rearrangements over manual `reshape`/`permute`.
   - Use `torch.no_grad()` in inference/evaluation contexts.
 - **Reproducibility**: Pin random seeds (`torch.manual_seed`, `np.random.seed`) in training scripts. Log hyperparameters.
-- **Configuration**: Use structured configs (`dataclasses`, `pydantic`, or `hydra`) — no bare `argparse` dicts passed around.
+- **Configuration**: Use **Hydra + OmegaConf** for ML configuration. Define structured configs with `@dataclass` (no `frozen=True` — Hydra needs mutability for config composition) and access them at runtime as `DictConfig`. No bare `argparse` dicts, no `pydantic` models for config.
 - **Logging**: Use Python's `logging` module, not `print`. In ML training, use `tqdm` for progress and a proper experiment tracker (W&B, MLflow, or at minimum TensorBoard).
 - **Performance**: Profile before optimizing. Use vectorized NumPy/PyTorch ops; avoid Python-level loops over large arrays.
 - **Formatting**: `black` + `isort` + `ruff`. Run before committing.

@@ -136,21 +136,45 @@ Complex comprehensions — expand into a function instead.
 
 ## Dataclasses
 
-```python
-from dataclasses import dataclass, field
+For **data containers and DTOs**, use `frozen=True`:
 
-@dataclass
-class TrainConfig:
-    lr: float = 1e-4
-    batch_size: int = 32
-    epochs: int = 100
-    extra: dict = field(default_factory=dict)
+```python
+from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ModelSpec:
     hidden_dim: int
     num_layers: int
     dropout: float = 0.1
+```
+
+For **ML training configuration**, use Hydra + OmegaConf structured configs. Do **not** use `frozen=True` — Hydra needs mutability for config composition and CLI overrides:
+
+```python
+from dataclasses import dataclass, field
+from omegaconf import MISSING, DictConfig
+from hydra.core.config_store import ConfigStore
+import hydra
+
+@dataclass
+class TrainConfig:
+    lr: float = 1e-4
+    batch_size: int = 32
+    epochs: int = 100
+    optimizer: str = "adamw"
+
+@dataclass
+class Config:
+    train: TrainConfig = field(default_factory=TrainConfig)
+    data_dir: str = MISSING  # must be provided; caught at startup
+
+cs = ConfigStore.instance()
+cs.store(name="config", node=Config)
+
+@hydra.main(config_path="conf", config_name="config", version_base=None)
+def train(cfg: DictConfig) -> None:
+    # Override from CLI: python train.py train.lr=1e-3 train.batch_size=64
+    run_training(cfg)
 ```
 
 ---

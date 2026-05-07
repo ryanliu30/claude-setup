@@ -16,14 +16,14 @@ paths:
 
 ## Immutability
 
-Prefer immutable data:
+Prefer immutable data for DTOs and result structs:
 
 ```python
 from dataclasses import dataclass
 from typing import NamedTuple
 
 @dataclass(frozen=True)
-class ModelConfig:
+class ModelSpec:       # DTO — immutable is appropriate here
     hidden_dim: int
     num_layers: int
     dropout: float = 0.1
@@ -32,6 +32,8 @@ class Batch(NamedTuple):
     inputs: torch.Tensor   # (B, T)
     labels: torch.Tensor   # (B,)
 ```
+
+**Exception — ML training configs**: use Hydra + OmegaConf structured configs (`@dataclass` without `frozen=True`). Hydra requires mutability for config composition and CLI overrides. See `rules/python/patterns.md`.
 
 ## Formatting Toolchain
 
