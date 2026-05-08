@@ -44,13 +44,21 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 - **Configuration**: Use **Hydra + OmegaConf** for ML configuration. Define structured configs with `@dataclass` (no `frozen=True` — Hydra needs mutability for config composition) and access them at runtime as `DictConfig`. No bare `argparse` dicts, no `pydantic` models for config.
 - **Logging**: Use Python's `logging` module, not `print`. In ML training, use `tqdm` for progress and a proper experiment tracker (W&B, MLflow, or at minimum TensorBoard).
 - **Performance**: Profile before optimizing. Use vectorized NumPy/PyTorch ops; avoid Python-level loops over large arrays.
-- **Formatting**: `black` + `isort` + `ruff` — configured as pre-commit hooks and run via `pre-commit run`, never invoked directly.
+- **Formatting**: `ruff` — configured as pre-commit hooks and run via `pre-commit run`, never invoked directly.
+- **Loose Backward Compatibility**: no backward compatibility requirement when working in research context. Cleanly outline what will break after the implementation of new feature or refactoring, and request user approval if the backward compatibility is crucial (e.g., breaks compatibility with previously generated dataset.)
 
 #### Testing
 - Tests go in `tests/` mirroring `src/` structure exactly.
 - Use `pytest`. Mark slow/GPU tests with `@pytest.mark.slow` so they can be skipped in CI.
 - Test data pipelines, preprocessing, and metric computations — not just utility functions.
 - For ML models, test output shapes, not just that the forward pass runs.
+
+#### TDD Workflow (new features, refactoring, bug fixes)
+- **Always write tests first.** When implementing a new feature, refactoring logic, or fixing a bug in core code, follow the RED-GREEN-REFACTOR cycle in `~/.claude/skills/tdd-workflow.md`.
+- RED: write failing tests and confirm they fail (not error) before writing any production code.
+- GREEN: write the minimal implementation to make tests pass, then commit.
+- REFACTOR: improve code quality with the green suite as a safety net, then commit.
+- Coverage gate: `pytest --cov=src --cov-fail-under=80` must pass before the task is complete.
 
 ---
 
