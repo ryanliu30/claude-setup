@@ -1,5 +1,9 @@
 # Git Workflow
 
+> **Submodules are read-only.** Never edit files inside a submodule directory.
+> If a fix requires a submodule change, stop and report it to the user instead.
+
+
 ## Commit Message Format
 
 ```

@@ -2,6 +2,9 @@
 
 These guidelines apply to **all workspaces** and interactions. They are opinionated, ML/research-oriented, and designed for professional Python development with occasional C/C++/Cython work.
 
+> **CRITICAL: Submodules are read-only.** Never edit any file inside a submodule directory.
+> If a fix requires a submodule change, stop and tell the user — do not attempt the edit.
+
 ---
 
 ## I. Environment & Execution
