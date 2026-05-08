@@ -32,6 +32,7 @@
       "Bash(uv run pytest *)",
       "Bash(python -m mypy *)",
       "Bash(mypy *)",
+      "Bash(pre-commit run *)",
       "Bash(ruff check *)",
       "Bash(ruff format --check *)",
       "Bash(black --check *)",
