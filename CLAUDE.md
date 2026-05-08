@@ -6,13 +6,13 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 
 ## I. Environment & Execution
 
-**CRITICAL**: Before running any Python scripts, tests, or installing packages, ensure the correct environment is active.
-
 ### 1. Environment Priority
-1. **Conda Environment**: Check if in the project README.md contains conda environment installation instructions. If so, use the conda environment. Otherwise, infer the potential environment name from the project name.
-   - Use `which python` to check if an environment is active. If so, proceed to execution.
-   - Run `conda activate <name>`. If unsure, run `conda env list`.
-2. **Never use the base environment** for project work — always prefer isolation.
+- Execute scripts and tests directly without checking the environment first.
+- If an `ImportError` or `ModuleNotFoundError` occurs, then check the environment:
+  1. Read the project `README.md` for conda environment setup instructions and activate the named environment.
+  2. If no name is documented, infer it from the project name and run `conda activate <name>`.
+  3. If unsure, run `conda env list` to find the right environment.
+- **Never use the base environment** for project work — always prefer isolation.
 
 ### 2. Pre-commit
 - Always run `pre-commit` if it exists before committing.

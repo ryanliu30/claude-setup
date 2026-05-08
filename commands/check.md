@@ -8,12 +8,16 @@ Run the project's quality checks, auto-fix everything safe to fix, and report wh
 
 1. Detect the check system by looking for (in order):
    - `Makefile` with a `check` target → run `make check`
-   - `pyproject.toml` with ruff/mypy/pytest config → run `ruff check . && mypy . && pytest`
-   - `setup.cfg` or `.flake8` → run `flake8 && pytest`
-   - Bare Python project → run `ruff check . && python -m pytest`
+   - `.pre-commit-config.yaml` → run `pre-commit run --all-files`
+   - `pyproject.toml` with mypy/pytest config → run `pre-commit run --all-files && mypy . && pytest`
+   - Bare Python project → run `pre-commit run --all-files && python -m pytest`
+
+   **Never** invoke `ruff`, `black`, `isort`, `flake8`, or other formatters/linters as direct shell
+   commands. All formatting and linting must go through `pre-commit run`.
 
 2. Capture the full output. For each failure category, apply fixes where safe:
-   - **Formatting** (`ruff format`, `ruff check --fix`): always auto-fix.
+   - **Formatting / Linting** (`pre-commit run --all-files`): always run; pre-commit will auto-fix
+     what it can. Re-run once after fixes so the hooks pass cleanly.
    - **Linting**: fix rule violations that don't require logic changes (unused imports, style). Skip anything that would alter behavior.
    - **Type errors**: fix annotation issues properly.
      - In `src/`: **never** use `# type: ignore` — fix types correctly or flag as needing manual attention.
