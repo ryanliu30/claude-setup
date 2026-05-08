@@ -87,6 +87,7 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 - **Never add Claude as co-author.** No `Co-Authored-By: Claude` lines — ever.
 - **Never commit if bugs are detected** in the staged diff.
 - **Atomic commits**: one logical change per commit. Avoid "WIP" commits on main branches.
+- **Submodules are read-only**: never edit files inside a submodule directory. Raise the change upstream instead.
 
 ---
 
