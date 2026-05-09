@@ -29,6 +29,11 @@ Run the project's quality checks, auto-fix everything safe to fix, and report wh
 
 4. Re-run the check suite to confirm all auto-fixable issues are resolved.
 
-5. Produce a final summary with two sections:
+5. Re-stage any files that were modified by auto-fixes so they are included in the next commit:
+   ```bash
+   git diff --name-only | xargs git add
+   ```
+
+6. Produce a final summary with two sections:
    - **Fixed**: bullet list of what was resolved and how.
    - **Requires manual attention**: bullet list of remaining issues with a one-line explanation of why each needs a logic change.
