@@ -13,9 +13,30 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 - Execute scripts and tests directly without checking the environment first.
 - If an `ImportError` or `ModuleNotFoundError` occurs, then check the environment:
   1. Read the project `README.md` for conda environment setup instructions and activate the named environment.
-  2. If no name is documented, infer it from the project name and run `conda activate <name>`.
+  2. If no name is documented, infer it from the project name.
   3. If unsure, run `conda env list` to find the right environment.
 - **Never use the base environment** for project work — always prefer isolation.
+
+### 2. Conda in Non-Interactive Shells
+The Bash tool runs in a non-interactive shell where `conda` is not on PATH and `conda activate` never works. Follow this protocol instead:
+
+1. **Locate conda first** — do not assume its install path:
+   ```bash
+   find / -maxdepth 6 -name "conda" -type f 2>/dev/null | grep "/bin/conda" | head -1
+   ```
+2. **Run commands in the target env** using the found path:
+   ```bash
+   <conda_path> run -n <env_name> <command>
+   # e.g. /opt/homebrew/Caskroom/miniforge/base/bin/conda run -n myenv python train.py
+   ```
+   Or invoke the environment's interpreter directly:
+   ```bash
+   <conda_base>/envs/<env_name>/bin/python
+   ```
+3. **If conda cannot be located**, stop and ask the user to restart the session with the environment pre-activated:
+   ```
+   conda activate <env> && claude
+   ```
 
 ### 2. Pre-commit
 - Always run `pre-commit` if it exists before committing.
