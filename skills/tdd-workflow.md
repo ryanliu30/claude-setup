@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: Step-by-step TDD process for ML research and infrastructure: RED-GREEN-REFACTOR cycle with git checkpoints, mandatory failing-test validation, and ML-specific test patterns. Activate when implementing new features, refactoring logic, or adding new model/data components.
+description: "Step-by-step TDD process for ML research and infrastructure: RED-GREEN-REFACTOR cycle with git checkpoints, mandatory failing-test validation, and ML-specific test patterns. Activate when implementing new features, refactoring logic, or adding new model/data components."
 origin: affaan-m/everything-claude-code (adapted for ML)
 ---
 
