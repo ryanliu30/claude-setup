@@ -66,7 +66,7 @@ Keep `~/.claude` as a git repo:
 cd ~/.claude
 git init
 git remote add origin https://github.com/ryanliu30/claude-setup
-git add -A
+git add CLAUDE.md commands/ rules/ skills/
 git commit -m "chore: initial setup"
 git push -u origin main
 ```

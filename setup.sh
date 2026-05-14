@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install claude-setup configuration to ~/.claude
-# Usage: curl -fsSL https://raw.githubusercontent.com/<you>/claude-setup/main/setup.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/ryanliu30/claude-setup/main/setup.sh | bash
 # Or:    bash setup.sh (from the repo root)
 
 set -e
