@@ -23,6 +23,7 @@ bash claude-setup/setup.sh
 | `settings.json` | Permissions (allow/ask), hooks |
 | `commands/` | Slash commands (see below) |
 | `rules/` | Auto-loaded coding standards by language |
+| ponytail plugin | Minimalist coding mode (YAGNI, stdlib-first), installed from its marketplace; defaults to `lite` |
 
 ## Slash Commands
 
@@ -48,6 +49,25 @@ Reference guides installed to `~/.claude/skills/`:
 | `python-testing` | pytest fixtures, parametrize, mocking, ML shape checks, GPU marks |
 | `cpp-coding-standards` | C++ Core Guidelines — RAII, smart pointers, naming, concurrency |
 | `cpp-testing` | GoogleTest/GMock, CMake/CTest, sanitizers, dependency injection |
+
+## Plugins
+
+[ponytail](https://github.com/DietrichGebert/ponytail) ("lazy senior dev mode") is installed
+from its plugin marketplace by `setup.sh`. It nudges toward the simplest solution that works:
+YAGNI, standard library first, no unrequested abstractions. It defaults to `lite` intensity
+(set via `PONYTAIL_DEFAULT_MODE` in `settings.json`) so it stays a gentle nudge alongside the
+TDD and coverage rules in `CLAUDE.md`.
+
+| Command | Description |
+|---------|-------------|
+| `/ponytail [lite\|full\|ultra\|off]` | Set minimalism intensity for the session |
+| `/ponytail-review` | Check the current diff for over-engineering |
+| `/ponytail-audit` | Scan the repository for complexity to trim |
+| `/ponytail-debt` | Track deferred simplifications |
+| `/ponytail-help` | Show ponytail usage |
+
+ponytail's session hooks require `node`; without it they no-op. To disable entirely:
+`claude plugin disable ponytail`. To update: `claude plugin update ponytail`.
 
 ## Rules (auto-loaded by file path)
 

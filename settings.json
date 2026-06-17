@@ -147,5 +147,8 @@
       }
     ]
   },
+  "env": {
+    "PONYTAIL_DEFAULT_MODE": "lite"
+  },
   "effortLevel": "high"
 }

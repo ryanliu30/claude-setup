@@ -42,11 +42,23 @@ cp "$SRC/skills/"*.md         "$TARGET/skills/"
 # Cleanup temp dir if used
 [ -d "$TMP_DIR/claude-setup" ] && rm -rf "$TMP_DIR"
 
+# ponytail plugin — minimalist coding mode (marketplace reference, defaults to lite).
+# Non-fatal: skip cleanly if the claude CLI or node is unavailable.
+if command -v claude >/dev/null 2>&1; then
+  command -v node >/dev/null 2>&1 || echo "  ⚠ node not found — ponytail hooks will no-op until node is installed"
+  echo "→ Installing ponytail plugin"
+  claude plugin marketplace add DietrichGebert/ponytail || echo "  ⚠ ponytail marketplace add failed — skipping"
+  claude plugin install ponytail@ponytail || echo "  ⚠ ponytail install failed — skipping"
+else
+  echo "  ⚠ claude CLI not found — skipping ponytail plugin (install later: claude plugin install ponytail@ponytail)"
+fi
+
 echo "✓ Done. Files installed to $TARGET"
 echo ""
 echo "  CLAUDE.md   → global guidelines"
 echo "  settings.json → permissions + hooks"
 echo "  commands/   → /commit /check /plan /code-review /python-review /cpp-review /build-fix /learn /test-coverage"
 echo "  rules/      → coding standards for Python, C++, and common practices"
+echo "  ponytail    → minimalist coding plugin (defaults to lite; toggle with /ponytail)"
 echo ""
 echo "  Tip: keep ~/.claude as a git repo and push changes to sync across machines."
