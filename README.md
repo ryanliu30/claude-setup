@@ -15,40 +15,56 @@ git clone https://github.com/ryanliu30/claude-setup
 bash claude-setup/setup.sh
 ```
 
+Everything shipped lives in `home/`, which mirrors `~/.claude` 1:1. Edit `home/`, re-run
+`setup.sh`. `settings.json` is merged with `jq` and backed up first, never clobbered, so
+`enabledPlugins` and `extraKnownMarketplaces` survive. The repo owns `permissions`,
+`defaultMode` (`auto`), and `effortLevel` (`xhigh`), so installing resets those three. No hooks
+are shipped.
+
 ## What gets installed to `~/.claude/`
 
 | File / Dir | Purpose |
 |-----------|---------|
 | `CLAUDE.md` | Global guidelines: ML patterns, C++/Cython style, writing tone, git rules |
-| `settings.json` | Permissions (allow/ask), hooks |
+| `settings.json` | Permissions (allow/ask/deny), `defaultMode`, `effortLevel`, merged into your existing file |
 | `commands/` | Slash commands (see below) |
-| `rules/` | Auto-loaded coding standards by language |
+| `rules/` | Coding standards, scoped by file path |
+| `skills/` | On-demand reference guides, one directory each |
 | ponytail plugin | Minimalist coding mode (YAGNI, stdlib-first), installed from its marketplace; defaults to `lite` |
 
 ## Slash Commands
 
 | Command | Description |
 |---------|-------------|
-| `/commit` | Analyze staged diff, bug-check, write Conventional Commit |
+| `/commit` | Analyze staged diff, bug-check, run the test suite, write Conventional Commit (Sonnet) |
 | `/check` | Run quality checks, auto-fix formatting/lint, report remainder |
-| `/plan` | Structure implementation plan, wait for confirmation before coding |
-| `/code-review` | Review staged changes or a PR: security, correctness, ML-specific checks |
+| `/ml-review` | ML-aware review of a diff or PR: data leakage, seeding, tensor and metric correctness |
 | `/python-review` | Deep Python static analysis (ruff, mypy, bandit, ML patterns) |
 | `/cpp-review` | C++/Cython review: RAII, memory safety, Cython memoryview patterns |
 | `/build-fix` | Incrementally fix build/type errors one at a time |
 | `/learn` | Extract reusable patterns from the session into skill files |
 | `/test-coverage` | Measure coverage, generate tests for under-covered files |
 
+No command here shadows a shipped one. `/plan` and `/code-review` are Claude Code's own:
+plan mode gates tools read-only and requires explicit approval, which a prompt file cannot do,
+and `/code-review` carries the cloud and PR machinery. What was worth keeping from the old
+`plan.md` now lives in `rules/common/planning.md`, and the old `code-review.md` became
+`/ml-review`. `verify.sh` fails if a command reclaims a shipped name.
+
 ## Skills
 
-Reference guides installed to `~/.claude/skills/`:
+Installed as `~/.claude/skills/<name>/SKILL.md` and loaded on demand by name. Only the name and
+description sit in context until a skill is invoked, which is why binding requirements belong in
+`rules/` and step-by-step procedures belong here.
 
 | Skill | Description |
 |-------|-------------|
+| `tdd-workflow` | RED-GREEN-REFACTOR with git checkpoints and ML test patterns |
 | `python-patterns` | Pythonic idioms, type hints, dataclasses, generators, concurrency |
 | `python-testing` | pytest fixtures, parametrize, mocking, ML shape checks, GPU marks |
-| `cpp-coding-standards` | C++ Core Guidelines — RAII, smart pointers, naming, concurrency |
+| `cpp-coding-standards` | C++ Core Guidelines, RAII, smart pointers, naming, concurrency |
 | `cpp-testing` | GoogleTest/GMock, CMake/CTest, sanitizers, dependency injection |
+| `verify-agent-implementation` | Check an implementation against its design spec before calling it done |
 
 ## Plugins
 
@@ -56,7 +72,8 @@ Reference guides installed to `~/.claude/skills/`:
 from its plugin marketplace by `setup.sh`. It nudges toward the simplest solution that works:
 YAGNI, standard library first, no unrequested abstractions. It defaults to `lite` intensity
 (set via `PONYTAIL_DEFAULT_MODE` in `settings.json`) so it stays a gentle nudge alongside the
-TDD and coverage rules in `CLAUDE.md`.
+test rules. Precedence is stated in `home/CLAUDE.md`: ponytail governs how much code to write,
+and the test rules still bind for library code under `src/`.
 
 | Command | Description |
 |---------|-------------|
@@ -69,32 +86,43 @@ TDD and coverage rules in `CLAUDE.md`.
 ponytail's session hooks require `node`; without it they no-op. To disable entirely:
 `claude plugin disable ponytail`. To update: `claude plugin update ponytail`.
 
-## Rules (auto-loaded by file path)
+## Rules
 
 ```
 rules/
-  common/         # universal: style, git, testing, security, performance
-  python/         # PEP 8, type hints, ML/NumPy conventions, pytest patterns
-  cpp/            # C++17 RAII, clang-format, Cython memoryviews
+  common/         # no frontmatter, always loaded: style, git, testing, security, performance, planning
+  python/         # paths: **/*.py, **/*.pyi
+  cpp/            # paths: **/*.cpp, **/*.hpp, **/*.cc, ...
 ```
+
+`common/` loads in every session. `python/` and `cpp/` carry `paths:` globs in their frontmatter
+and load only when matching files are in play.
+
+## Commit Enforcement
+
+Git owns it, not Claude Code. A `PreToolUse` hook cannot see the commit reliably and a non-zero
+exit other than 2 is treated as advisory, so the previous hook silently passed every commit.
+
+```bash
+pre-commit install                                          # once per repo
+pre-commit init-templatedir -t pre-commit ~/.git-template   # optional, once per machine
+git config --global init.templateDir ~/.git-template        # registers it in future clones
+```
+
+`/commit` installs the hook if a `.pre-commit-config.yaml` exists without one, runs the full
+test suite, and refuses to commit when either fails. `--no-verify` is denied in
+`settings.json`.
 
 ## Sync Across Machines
 
-Keep `~/.claude` as a git repo:
-
-```bash
-cd ~/.claude
-git init
-git remote add origin https://github.com/ryanliu30/claude-setup
-git add CLAUDE.md commands/ rules/ skills/
-git commit -m "chore: initial setup"
-git push -u origin main
-```
-
-On other machines, re-run the install command to pull the latest config.
+Re-run the install command on each machine. Do not turn `~/.claude` into a git repo: it also
+holds session transcripts in `projects/`, `history.jsonl`, `sessions/`, and `telemetry/`, which
+is hundreds of megabytes of prompt history one `git add -A` away from being published.
 
 ## Customization
 
-- Edit `~/.claude/CLAUDE.md` for project-level overrides (it's loaded globally).
-- Add project-specific rules in `.claude/rules/` at the project root — they layer on top of global rules.
-- Drop new commands in `~/.claude/commands/` and they're available as `/command-name` instantly.
+- Edit `home/CLAUDE.md` and re-run `setup.sh` to change the global guidelines.
+- Add project-specific rules in `.claude/rules/` at a project root, they layer on top of these.
+- Drop new commands in `home/commands/` and they are available as `/command-name` after install.
+- Run `./verify.sh` after editing `home/settings.json`, `home/commands/commit.md`, or the skill
+  layout.
