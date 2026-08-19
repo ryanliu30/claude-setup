@@ -54,8 +54,19 @@ remaining action is the merge command itself:
   conflicts to resolve.
 - The final report names the branch, the worktree path, and the exact merge command to run.
 
-On the user's go-ahead, run the merge and then remove the worktree with
-`git worktree remove <path>`. Leaving a stale worktree behind counts as unfinished work.
+On the user's go-ahead, tear the worktree down in the same turn as the merge. Leaving a stale
+worktree or a merged branch behind counts as unfinished work.
+
+1. Leave the worktree session first, keeping the branch. A session created by the harness
+   worktree tool is pinned inside the worktree and cannot run the merge from the main checkout,
+   and a worktree cannot be removed while it is the working directory.
+2. Merge from the main checkout: `git merge --ff-only <branch>`.
+3. `git worktree remove <path>`.
+4. `git branch -d <branch>`. Use `-d`, never `-D`, so git refuses if the branch did not actually
+   merge.
+
+Then confirm the teardown: `git worktree list` shows only the main checkout and
+`git status --porcelain` prints nothing.
 
 ## Pull Request Workflow
 
