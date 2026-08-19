@@ -5,10 +5,10 @@ These guidelines apply to **all workspaces** and interactions. They are opiniona
 > **CRITICAL: Submodules are read-only.** Never edit any file inside a submodule directory.
 > If a fix requires a submodule change, stop and tell the user. Do not attempt the edit.
 
-> **Precedence.** ponytail governs how much code to write, not whether to test it. For library
-> code under `src/`, the test rules in `rules/common/testing.md` bind: tests first, `tests/`
-> mirrors `src/`, 80% coverage gate. For scripts, notebooks, and exploratory work ponytail wins,
-> and one assert-based check is enough.
+> **Precedence.** The `ponytail` skill governs how much code to write, not whether to test it.
+> For library code under `src/`, the test rules in `rules/common/testing.md` bind: tests first,
+> `tests/` mirrors `src/`, 80% coverage gate. For scripts, notebooks, and exploratory work the
+> skill wins, and one assert-based check is enough.
 
 > **Skills** live at `~/.claude/skills/<name>/SKILL.md` and load by name. Reference them by name,
 > for example the `tdd-workflow` skill, never by file path.

@@ -70,15 +70,19 @@ for dir in commands rules skills; do
   done < <(cd "$TARGET/$dir" && find . -type f -name '*.md' | sed 's|^\./||')
 done
 
-# ponytail plugin, minimalist coding mode (marketplace reference, defaults to lite).
-# Non-fatal: skip cleanly if the claude CLI or node is unavailable.
+# ponytail ships as skills now, its always-on hooks needed node and no-opped without it.
+# Remove a plugin install left behind by an earlier setup.sh. Delete this block once every
+# machine has re-run the installer.
 if command -v claude >/dev/null 2>&1; then
-  command -v node >/dev/null 2>&1 || echo "  ⚠ node not found, ponytail hooks will no-op until node is installed"
-  echo "→ Installing ponytail plugin"
-  claude plugin marketplace add DietrichGebert/ponytail || echo "  ⚠ ponytail marketplace add failed, skipping"
-  claude plugin install ponytail@ponytail || echo "  ⚠ ponytail install failed, skipping"
-else
-  echo "  ⚠ claude CLI not found, skipping ponytail plugin (install later: claude plugin install ponytail@ponytail)"
+  claude plugin uninstall ponytail@ponytail >/dev/null 2>&1 && echo "  removed the ponytail plugin, its skills ship in skills/ now"
+  claude plugin marketplace remove ponytail >/dev/null 2>&1 || true
+fi
+rm -f "$TARGET/.ponytail-active"
+# The merge above cannot delete keys, so the env var the plugin read has to go explicitly.
+if jq -e '.env.PONYTAIL_DEFAULT_MODE' "$LIVE" >/dev/null 2>&1; then
+  jq 'del(.env.PONYTAIL_DEFAULT_MODE) | if (.env | length) == 0 then del(.env) else . end' \
+    "$LIVE" > "$TMP_DIR/env.json" && mv "$TMP_DIR/env.json" "$LIVE"
+  echo "  removed the stale PONYTAIL_DEFAULT_MODE env var"
 fi
 
 echo "✓ Done. Files installed to $TARGET"
@@ -87,8 +91,7 @@ echo "  CLAUDE.md   → global guidelines"
 echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, merged with your local keys"
 echo "  commands/   → /commit /check /ml-review /python-review /cpp-review /build-fix /learn /test-coverage"
 echo "  rules/      → coding standards for Python, C++, and common practices"
-echo "  skills/     → <name>/SKILL.md, loaded on demand by name"
-echo "  ponytail    → minimalist coding plugin (defaults to lite; toggle with /ponytail)"
+echo "  skills/     → <name>/SKILL.md, loaded on demand by name (includes /ponytail, defaults to lite)"
 echo ""
 echo "  Commit enforcement is git's. In each repo: pre-commit install"
 echo "  To register it in every future clone automatically:"

@@ -142,8 +142,5 @@
     ],
     "defaultMode": "auto"
   },
-  "env": {
-    "PONYTAIL_DEFAULT_MODE": "lite"
-  },
   "effortLevel": "xhigh"
 }

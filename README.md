@@ -30,7 +30,6 @@ are shipped.
 | `commands/` | Slash commands (see below) |
 | `rules/` | Coding standards, scoped by file path |
 | `skills/` | On-demand reference guides, one directory each |
-| ponytail plugin | Minimalist coding mode (YAGNI, stdlib-first), installed from its marketplace; defaults to `lite` |
 
 ## Slash Commands
 
@@ -65,26 +64,18 @@ description sit in context until a skill is invoked, which is why binding requir
 | `cpp-coding-standards` | C++ Core Guidelines, RAII, smart pointers, naming, concurrency |
 | `cpp-testing` | GoogleTest/GMock, CMake/CTest, sanitizers, dependency injection |
 | `verify-agent-implementation` | Check an implementation against its design spec before calling it done |
+| `ponytail` | Minimalism mode: YAGNI, stdlib first, no unrequested abstractions. Defaults to `lite` |
+| `ponytail-review` | Review the current diff for over-engineering, one line per finding |
+| `ponytail-audit` | Scan the whole repo for complexity to trim, ranked biggest cut first |
 
-## Plugins
-
-[ponytail](https://github.com/DietrichGebert/ponytail) ("lazy senior dev mode") is installed
-from its plugin marketplace by `setup.sh`. It nudges toward the simplest solution that works:
-YAGNI, standard library first, no unrequested abstractions. It defaults to `lite` intensity
-(set via `PONYTAIL_DEFAULT_MODE` in `settings.json`) so it stays a gentle nudge alongside the
-test rules. Precedence is stated in `home/CLAUDE.md`: ponytail governs how much code to write,
-and the test rules still bind for library code under `src/`.
-
-| Command | Description |
-|---------|-------------|
-| `/ponytail [lite\|full\|ultra\|off]` | Set minimalism intensity for the session |
-| `/ponytail-review` | Check the current diff for over-engineering |
-| `/ponytail-audit` | Scan the repository for complexity to trim |
-| `/ponytail-debt` | Track deferred simplifications |
-| `/ponytail-help` | Show ponytail usage |
-
-ponytail's session hooks require `node`; without it they no-op. To disable entirely:
-`claude plugin disable ponytail`. To update: `claude plugin update ponytail`.
+The three `ponytail` skills are vendored from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail)
+(MIT), lightly adapted. The upstream plugin is not installed: its value was a `SessionStart` hook
+that switched minimalism on for every session, and that hook needs `node`, so on a machine without
+node it no-opped and the plugin did nothing. As skills they need no runtime at all, at the cost of
+loading on demand rather than always. `/ponytail` sets the intensity for the session
+(`lite`, `full`, `ultra`), and `rules/common/coding-style.md` carries the always-on baseline.
+Precedence is stated in `home/CLAUDE.md`: the skill governs how much code to write, and the test
+rules still bind for library code under `src/`.
 
 ## Rules
 
