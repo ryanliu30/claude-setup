@@ -24,12 +24,6 @@ else
   SRC="$TMP_DIR/claude-setup/home"
 fi
 
-command -v jq >/dev/null 2>&1 || {
-  echo "  ✗ jq is required: settings.json is merged, not overwritten." >&2
-  echo "    Install it (brew install jq) and re-run." >&2
-  exit 1
-}
-
 mkdir -p "$TARGET"
 
 # Markdown trees: copy in place. No --delete, it would silently remove commands or skills
@@ -40,28 +34,9 @@ for dir in commands rules skills; do
 done
 cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
 
-# settings.json is the one file with live state in it (enabledPlugins, extraKnownMarketplaces,
-# and anything set through /config). Merge, never clobber.
-LIVE="$TARGET/settings.json"
-if [ -f "$LIVE" ]; then
-  BACKUP="$LIVE.bak.$(date +%Y%m%d%H%M%S)"
-  cp -a "$LIVE" "$BACKUP"
-  # `*` merges objects recursively and replaces arrays wholesale, which is what we want:
-  # repo owns permissions, defaultMode, and effortLevel; the machine keeps everything else.
-  # Re-running therefore resets defaultMode and effortLevel to the repo's values.
-  jq -s '.[0] * .[1]' "$LIVE" "$SRC/settings.json" > "$TMP_DIR/merged.json"
-  mv "$TMP_DIR/merged.json" "$LIVE"
-  echo "  settings.json merged (backup: $(basename "$BACKUP"))"
-  # A merge cannot delete keys, so any hook the repo stopped shipping survives here.
-  stale=$(jq -r --slurpfile repo "$SRC/settings.json" \
-    '((.hooks // {}) | keys) - (($repo[0].hooks // {}) | keys) | join(" ")' "$LIVE")
-  for h in $stale; do
-    echo "  ⚠ hooks.$h in $LIVE is no longer shipped by the repo"
-    echo "    remove it:  jq 'del(.hooks.$h)' \"$LIVE\" > t && mv t \"$LIVE\""
-  done
-else
-  cp "$SRC/settings.json" "$LIVE"
-fi
+# The repo owns settings.json outright, so it is copied like everything else. Anything set
+# through /config (enabledPlugins, extraKnownMarketplaces) is reset on every install.
+cp "$SRC/settings.json" "$TARGET/settings.json"
 
 # Report files present in ~/.claude but not in the repo, so they get deleted deliberately.
 for dir in commands rules skills; do
@@ -78,17 +53,11 @@ if command -v claude >/dev/null 2>&1; then
   claude plugin marketplace remove ponytail >/dev/null 2>&1 || true
 fi
 rm -f "$TARGET/.ponytail-active"
-# The merge above cannot delete keys, so the env var the plugin read has to go explicitly.
-if jq -e '.env.PONYTAIL_DEFAULT_MODE' "$LIVE" >/dev/null 2>&1; then
-  jq 'del(.env.PONYTAIL_DEFAULT_MODE) | if (.env | length) == 0 then del(.env) else . end' \
-    "$LIVE" > "$TMP_DIR/env.json" && mv "$TMP_DIR/env.json" "$LIVE"
-  echo "  removed the stale PONYTAIL_DEFAULT_MODE env var"
-fi
 
 echo "✓ Done. Files installed to $TARGET"
 echo ""
 echo "  CLAUDE.md   → global guidelines"
-echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, merged with your local keys"
+echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, replaces your file"
 echo "  commands/   → /commit /check /ml-review /python-review /cpp-review /build-fix /learn /test-coverage"
 echo "  rules/      → coding standards for Python, C++, and common practices"
 echo "  skills/     → <name>/SKILL.md, loaded on demand by name (includes /ponytail, defaults to lite)"

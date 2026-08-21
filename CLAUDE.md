@@ -9,10 +9,10 @@ them here.
 - Run `./verify.sh` before committing. It is the only test suite here.
 - Skills are directories: `home/skills/<name>/SKILL.md` with `name` and `description`
   frontmatter. A flat `.md` file in `skills/` never loads.
-- `home/settings.json` is merged into the live file with `jq`, not copied over it, so
-  `enabledPlugins` and `extraKnownMarketplaces` survive. The repo owns `permissions`,
-  `defaultMode`, and `effortLevel`, which means installing resets those three.
+- `home/settings.json` is copied over the live file like every other shipped file, so the repo
+  owns all of it and installing resets whatever `/config` wrote (`enabledPlugins`,
+  `extraKnownMarketplaces`). The installer needs no JSON tooling; keep it that way.
 - The repo ships no hooks. Commit enforcement is git's `pre-commit` hook, not a Claude Code
   hook: a `PreToolUse` hook cannot reliably gate commits and the previous one silently no-opped
-  for months. A merge cannot delete keys, so `setup.sh` reports hooks left behind on a machine.
+  for months. The copy deletes any hook a machine still has.
 - No em dashes in any shipped markdown. `verify.sh` fails on them.

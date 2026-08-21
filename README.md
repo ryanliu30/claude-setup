@@ -16,17 +16,16 @@ bash claude-setup/setup.sh
 ```
 
 Everything shipped lives in `home/`, which mirrors `~/.claude` 1:1. Edit `home/`, re-run
-`setup.sh`. `settings.json` is merged with `jq` and backed up first, never clobbered, so
-`enabledPlugins` and `extraKnownMarketplaces` survive. The repo owns `permissions`,
-`defaultMode` (`auto`), and `effortLevel` (`xhigh`), so installing resets those three. No hooks
-are shipped.
+`setup.sh`. `settings.json` is copied over your live file like everything else, so the repo owns
+all of it: `permissions`, `defaultMode` (`auto`), `effortLevel` (`xhigh`), and installing resets
+anything `/config` wrote, such as `enabledPlugins`. No hooks are shipped.
 
 ## What gets installed to `~/.claude/`
 
 | File / Dir | Purpose |
 |-----------|---------|
 | `CLAUDE.md` | Global guidelines: ML patterns, C++/Cython style, writing tone, git rules |
-| `settings.json` | Permissions (allow/ask/deny), `defaultMode`, `effortLevel`, merged into your existing file |
+| `settings.json` | Permissions (allow/ask/deny), `defaultMode`, `effortLevel`, copied over your file |
 | `commands/` | Slash commands (see below) |
 | `rules/` | Coding standards, scoped by file path |
 | `skills/` | On-demand reference guides, one directory each |

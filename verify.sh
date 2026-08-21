@@ -10,13 +10,24 @@ ok()   { printf '  ok    %s\n' "$1"; }
 fail() { printf '  FAIL  %s\n' "$1"; fails=$((fails + 1)); }
 check() { if [ "$1" = 0 ]; then ok "$2"; else fail "$2${3:+: $3}"; fi }
 
-command -v jq >/dev/null 2>&1 || { echo "jq is required" >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
 
 echo "settings.json"
-jq -e . home/settings.json >/dev/null 2>&1
+# One parse, three values: the allow/deny overlap, effortLevel, defaultMode. An unparseable
+# file fails here and leaves the three blank, so the checks below report against "".
+values=$(python3 - <<'EOF' 2>/dev/null
+import json
+
+settings = json.load(open("home/settings.json"))
+permissions = settings["permissions"]
+print(", ".join(sorted(set(permissions["allow"]) & set(permissions["deny"]))))
+print(settings.get("effortLevel", ""))
+print(permissions.get("defaultMode", ""))
+EOF
+)
 check $? "valid JSON"
 
-overlap=$(jq -r '[.permissions.allow[]] - ([.permissions.allow[]] - [.permissions.deny[]]) | join(", ")' home/settings.json)
+overlap=$(sed -n 1p <<<"$values")
 [ -z "$overlap" ]
 check $? "allow and deny do not overlap" "$overlap"
 
@@ -25,14 +36,14 @@ check $? "allow and deny do not overlap" "$overlap"
 ! grep -q "CLAUDE_TOOL_INPUT_COMMAND" home/settings.json
 check $? "no CLAUDE_TOOL_INPUT_COMMAND (hooks read stdin JSON, not env vars)"
 
-! jq -e '.hooks.PreToolUse' home/settings.json >/dev/null 2>&1
+! grep -q "PreToolUse" home/settings.json
 check $? "no PreToolUse hook (git's pre-commit hook enforces commits)"
 
-effort=$(jq -r '.effortLevel // ""' home/settings.json)
+effort=$(sed -n 2p <<<"$values")
 case "$effort" in low|medium|high|xhigh|max) ok "effortLevel: $effort" ;;
   *) fail "effortLevel invalid or missing: '$effort'" ;; esac
 
-mode=$(jq -r '.permissions.defaultMode // ""' home/settings.json)
+mode=$(sed -n 3p <<<"$values")
 case "$mode" in default|acceptEdits|plan|auto|bypassPermissions) ok "defaultMode: $mode" ;;
   *) fail "permissions.defaultMode invalid or missing: '$mode'" ;; esac
 
