@@ -4,6 +4,15 @@ Plan mode is the harness feature, entered with `/plan` or the mode switch. It ga
 read-only, writes the plan to a file, and requires explicit approval. Do not reimplement it as a
 prompt; these rules only add what the harness does not know about this stack.
 
+## Grill First
+
+Entering plan mode triggers the `grilling` skill, both entry points, `/plan` and the mode
+switch. Run its rounds before writing a single line of the plan: the plan is the record of what
+the grilling settled, not a first guess put to the user for approval.
+
+Stop grilling when the frontier is empty and the user confirms shared understanding, then write
+the plan. If the user says to skip it, skip it and plan directly.
+
 ## What a plan must contain
 
 - Ordered list of files to create or modify, each with a one-line rationale.
