@@ -1,5 +1,7 @@
 ---
+name: ml-review
 description: ML-focused review of staged changes or a PR: data leakage, seeding, tensor and metric correctness, on top of the usual security and maintainability checks.
+context: fork
 ---
 
 Perform an ML-aware code review. The built-in `/code-review` covers the generic dimensions and

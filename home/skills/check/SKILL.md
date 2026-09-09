@@ -1,5 +1,8 @@
 ---
+name: check
 model: haiku
+description: Run the project's quality checks, auto-fix everything safe to fix, and report what remains.
+disable-model-invocation: true
 ---
 
 Run the project's quality checks, auto-fix everything safe to fix, and report what remains.

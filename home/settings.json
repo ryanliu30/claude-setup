@@ -1,33 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls *)",
-      "Bash(grep *)",
-      "Bash(rg *)",
-      "Bash(cat *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(wc *)",
-      "Bash(which *)",
-      "Bash(python --version)",
-      "Bash(python3 --version)",
-      "Bash(uv --version)",
-      "Bash(conda env list)",
-      "Bash(conda info)",
-      "Bash(git status)",
-      "Bash(git log *)",
-      "Bash(git diff *)",
-      "Bash(git show *)",
-      "Bash(git branch)",
-      "Bash(git remote *)",
-      "Bash(git fetch *)",
-      "Bash(git blame *)",
-      "Bash(git rev-parse *)",
-      "Bash(git stash list)",
-      "Bash(git config --list)",
-      "Bash(git tag)",
-      "Bash(git add *)",
-      "Bash(git commit *)",
       "Bash(python -m pytest *)",
       "Bash(pytest *)",
       "Bash(uv run pytest *)",
@@ -35,21 +8,10 @@
       "Bash(mypy *)",
       "Bash(pre-commit run *)",
       "Bash(pre-commit install*)",
-      "Bash(ruff check *)",
-      "Bash(ruff format --check *)",
-      "Bash(black --check *)",
-      "Bash(isort --check *)",
       "Bash(python -m compileall *)",
       "Bash(clang-format --dry-run *)",
       "Bash(clang-tidy *)",
-      "Bash(cppcheck *)",
-      "Bash(cython --version)",
-      "Bash(sed -i *)",
-      "Edit",
-      "Read",
-      "Write",
-      "Bash(echo *)",
-      "Bash(pwd)"
+      "Bash(cppcheck *)"
     ],
     "ask": [
       "Bash(rm *)",
@@ -112,6 +74,14 @@
       "Bash(source *)"
     ],
     "deny": [
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "Read(//**/.envrc)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.netrc)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(~/.config/gh/**)",
       "Bash(env)",
       "Bash(env |*)",
       "Bash(env > *)",
@@ -135,6 +105,9 @@
       "Bash(curl *| *sh*)",
       "Bash(wget *| *sh*)",
       "Bash(git commit *--no-verify*)",
+      "Bash(git commit -n *)",
+      "Bash(git commit * -n *)",
+      "Bash(git commit * -n)",
       "Bash(rm -rf ~)",
       "Bash(rm -rf ~/)",
       "Bash(rm -rf $HOME)",
@@ -142,5 +115,9 @@
     ],
     "defaultMode": "auto"
   },
-  "effortLevel": "xhigh"
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "effortLevel": "high"
 }

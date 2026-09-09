@@ -1,4 +1,5 @@
 ---
+name: test-coverage
 description: Measure test coverage, identify gaps, and generate missing tests to reach 80%+.
 ---
 

@@ -1,5 +1,8 @@
 ---
+name: commit
 model: sonnet
+description: Analyze the currently staged git files and create a high-quality commit for them.
+disable-model-invocation: true
 ---
 
 Analyze the currently staged git files and create a high-quality commit for them.

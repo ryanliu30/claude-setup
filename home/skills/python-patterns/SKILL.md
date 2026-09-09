@@ -256,9 +256,8 @@ if value is None: ...
 
 ## Tooling
 
-Format and lint with `ruff` only (no `black`, no `isort`):
+Format and lint with `ruff` only (no `black`, no `isort`), run through pre-commit:
 
 ```bash
-ruff format src/
-ruff check --fix src/
+pre-commit run --all-files
 ```

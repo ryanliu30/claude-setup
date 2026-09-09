@@ -47,11 +47,10 @@ Pre-commit hooks (run automatically on commit):
 
 `ruff` handles both formatting and linting; no `black`, no `isort`, no separate flake8. Do not introduce those tools or suggest them.
 
-To run manually before committing:
+To run manually before committing, go through pre-commit, never the tools directly:
 ```bash
-ruff check --fix src/
-ruff format src/
-cython-lint **/*.pyx
+pre-commit run --all-files
+pre-commit run --files src/model.py tests/test_model.py
 ```
 
 ## ML / NumPy Conventions

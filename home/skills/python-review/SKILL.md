@@ -1,5 +1,7 @@
 ---
+name: python-review
 description: Deep Python-specific code review using static analysis tools.
+context: fork
 ---
 
 Find modified `.py` files and perform a thorough Python code review.
@@ -19,10 +21,8 @@ If no Python files changed, say so and stop.
 Run the following tools (skip gracefully if not installed):
 
 ```bash
-ruff check <files>
-ruff format --check <files>
-cython-lint <pyx_files>   # if any .pyx files changed
-bandit -r <files> -ll     # security scan, low severity and above (if installed)
+pre-commit run --files <files>   # ruff check, ruff format, cython-lint via the repo's hooks
+bandit -r <files> -ll            # security scan, low severity and above (if installed)
 ```
 
 ## Step 3: Review by Severity

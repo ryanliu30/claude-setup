@@ -1,5 +1,7 @@
 ---
+name: cpp-review
 description: C++ and Cython code review focused on memory safety, modern C++, and Python extension correctness.
+context: fork
 ---
 
 Find modified C++/Cython files and perform a thorough review.

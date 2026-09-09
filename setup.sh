@@ -26,9 +26,9 @@ fi
 
 mkdir -p "$TARGET"
 
-# Markdown trees: copy in place. No --delete, it would silently remove commands or skills
-# that exist only on this machine; orphans are reported below instead.
-for dir in commands rules skills; do
+# Markdown trees: copy in place. No --delete, it would silently remove rules or skills that
+# exist only on this machine; orphans are reported below instead.
+for dir in rules skills; do
   mkdir -p "$TARGET/$dir"
   cp -R "$SRC/$dir/." "$TARGET/$dir/"
 done
@@ -39,15 +39,22 @@ cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
 cp "$SRC/settings.json" "$TARGET/settings.json"
 
 # Report files present in ~/.claude but not in the repo, so they get deleted deliberately.
-for dir in commands rules skills; do
+for dir in rules skills; do
   while IFS= read -r rel; do
     [ -e "$SRC/$dir/$rel" ] || echo "  ⚠ orphan: $TARGET/$dir/$rel (not in repo, delete if stale)"
   done < <(cd "$TARGET/$dir" && find . -type f -name '*.md' | sed 's|^\./||')
 done
 
-# ponytail ships as skills now, its always-on hooks needed node and no-opped without it.
-# Remove a plugin install left behind by an earlier setup.sh. Delete this block once every
-# machine has re-run the installer.
+# Migrations from earlier layouts. Delete each block once every machine has re-run the installer.
+# 1. The slash commands ship as skills/<name>/SKILL.md now. A flat commands/<name>.md left behind
+#    would answer to the same /name, so remove the copies an earlier setup.sh installed.
+for name in build-fix check commit cpp-review learn ml-review python-review test-coverage; do
+  rm -f "$TARGET/commands/$name.md"
+done
+rmdir "$TARGET/commands" 2>/dev/null || true
+# 2. An earlier installer merged settings.json and left a timestamped backup each run.
+rm -f "$TARGET"/settings.json.bak.*
+# 3. ponytail ships as skills now, its always-on hooks needed node and no-opped without it.
 if command -v claude >/dev/null 2>&1; then
   claude plugin uninstall ponytail@ponytail >/dev/null 2>&1 && echo "  removed the ponytail plugin, its skills ship in skills/ now"
   claude plugin marketplace remove ponytail >/dev/null 2>&1 || true
@@ -56,11 +63,11 @@ rm -f "$TARGET/.ponytail-active"
 
 echo "✓ Done. Files installed to $TARGET"
 echo ""
-echo "  CLAUDE.md   → global guidelines"
-echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, replaces your file"
-echo "  commands/   → /commit /check /ml-review /python-review /cpp-review /build-fix /learn /test-coverage"
-echo "  rules/      → coding standards for Python, C++, and common practices"
-echo "  skills/     → <name>/SKILL.md, loaded on demand by name (includes /ponytail, defaults to lite)"
+echo "  CLAUDE.md     → global guidelines"
+echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, attribution, replaces your file"
+echo "  rules/        → coding standards for Python, C++, and common practices"
+echo "  skills/       → <name>/SKILL.md, loaded on demand by name; slash commands:"
+echo "                  /commit /check /ml-review /python-review /cpp-review /build-fix /test-coverage /ponytail"
 echo ""
 echo "  Commit enforcement is git's. In each repo: pre-commit install"
 echo "  To register it in every future clone automatically:"

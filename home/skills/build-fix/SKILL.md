@@ -1,4 +1,5 @@
 ---
+name: build-fix
 description: Incrementally fix build, type, and lint errors with minimal, safe changes.
 ---
 
@@ -9,7 +10,7 @@ Fix build errors one at a time. Never make large refactors, smallest change that
 | Indicator | Command |
 |-----------|---------|
 | `pyproject.toml` with mypy | `mypy . 2>&1` |
-| `pyproject.toml` with ruff | `ruff check . 2>&1` |
+| `.pre-commit-config.yaml` | `pre-commit run --all-files 2>&1` |
 | `setup.py` / `setup.cfg` with Cython | `python setup.py build_ext --inplace 2>&1` |
 | `CMakeLists.txt` | `cmake --build build/ 2>&1` |
 | `Makefile` with `build` target | `make build 2>&1` |

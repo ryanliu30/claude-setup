@@ -19,6 +19,7 @@ Rules:
 - Body explains *why*, not *what* (the diff shows what).
 - **Never** add `Co-Authored-By: Claude` or any AI attribution.
 - Do not commit if a bug check finds issues.
+- One logical change per commit. No WIP commits on main branches.
 
 ## Branch Naming
 
