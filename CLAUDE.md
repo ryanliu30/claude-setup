@@ -12,7 +12,12 @@ them here.
 - `home/settings.json` is copied over the live file like every other shipped file, so the repo
   owns all of it and installing resets whatever `/config` wrote (`enabledPlugins`,
   `extraKnownMarketplaces`). The installer needs no JSON tooling; keep it that way.
-- The repo ships no hooks. Commit enforcement is git's `pre-commit` hook, not a Claude Code
-  hook: a `PreToolUse` hook cannot reliably gate commits and the previous one silently no-opped
-  for months. The copy deletes any hook a machine still has.
+- Hooks ship as `home/hooks/<name>.sh`, wired up in `home/settings.json` and installed to
+  `~/.claude/hooks`. They are for injecting context, never for gating: commit enforcement is
+  git's `pre-commit` hook, because a `PreToolUse` hook cannot reliably gate commits and the
+  previous one silently no-opped for months. `verify.sh` fails on any `PreToolUse` entry.
+- `plan-grill.sh` is the only hook. It runs on `UserPromptSubmit`, the one event that carries
+  `permission_mode` and can inject context, and reasserts the grill-first rule whenever plan
+  mode is active. No hook event fires on a mode change, so this is what covers shift+tab.
+  A hook's `if` field is evaluated only on tool events, so the mode test lives in the script.
 - No em dashes in any shipped markdown. `verify.sh` fails on them.

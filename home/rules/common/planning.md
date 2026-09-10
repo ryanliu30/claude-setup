@@ -6,12 +6,18 @@ prompt; these rules only add what the harness does not know about this stack.
 
 ## Grill First
 
-Entering plan mode triggers the `grilling` skill, both entry points, `/plan` and the mode
-switch. Run its rounds before writing a single line of the plan: the plan is the record of what
-the grilling settled, not a first guess put to the user for approval.
+Invoking the `grilling` skill is the first action on entering plan mode, before any research,
+any file reading, and any draft of the plan. This holds for both entry points, `/plan` and the
+mode switch, and it overrides the harness's own instruction to go straight to investigating and
+writing the plan. The plan is the record of what the grilling settled, not a first guess put to
+the user for approval.
+
+Two exceptions, and no others: the user says to skip the grilling, or the task is small enough
+that the frontier is empty on the first pass, meaning there is genuinely nothing to decide. In
+the second case, say so in one line rather than skipping silently.
 
 Stop grilling when the frontier is empty and the user confirms shared understanding, then write
-the plan. If the user says to skip it, skip it and plan directly.
+the plan.
 
 ## What a plan must contain
 

@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
+description: Grill the user relentlessly about a plan, decision, or idea until every open question is settled. Use as the FIRST action on entering plan mode, both entry points, /plan and the shift+tab mode switch, before researching or writing any part of the plan. Also use whenever the user wants to stress-test their thinking, or says "grill me", "stress-test this", "poke holes in this", "challenge this", or "interview me".
 ---
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
