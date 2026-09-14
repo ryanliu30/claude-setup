@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: Pythonic idioms, type hints, error handling, context managers, generators, dataclasses, concurrency, and package organization for robust Python development.
+description: Pythonic idioms, type hints, error handling, context managers, generators, dataclasses, concurrency, and package organization for Python development.
 origin: affaan-m/everything-claude-code (adapted)
 ---
 
@@ -15,7 +15,7 @@ origin: affaan-m/everything-claude-code (adapted)
 
 ## Core Principles
 
-**Readability counts.** Code should be obvious.
+**Code should be obvious.**
 
 ```python
 # Good
@@ -130,7 +130,7 @@ def read_jsonl(path: str) -> Iterator[dict]:
             yield json.loads(line)
 ```
 
-Complex comprehensions, expand into a function instead.
+Expand complex comprehensions into a function.
 
 ---
 
@@ -148,7 +148,7 @@ class ModelSpec:
     dropout: float = 0.1
 ```
 
-For **ML training configuration**, use Hydra + OmegaConf structured configs. Do **not** use `frozen=True`, Hydra needs mutability for config composition and CLI overrides:
+For **ML training configuration**, use Hydra + OmegaConf structured configs, not frozen, since Hydra composes and overrides by mutation:
 
 ```python
 from dataclasses import dataclass, field
@@ -256,7 +256,7 @@ if value is None: ...
 
 ## Tooling
 
-Format and lint with `ruff` only (no `black`, no `isort`), run through pre-commit:
+`ruff` only, run through pre-commit:
 
 ```bash
 pre-commit run --all-files

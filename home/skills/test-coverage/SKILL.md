@@ -3,7 +3,7 @@ name: test-coverage
 description: Measure test coverage, identify gaps, and generate missing tests to reach 80%+.
 ---
 
-Analyze test coverage and generate tests for under-covered files.
+Measure coverage and write tests for under-covered files.
 
 ## Step 1: Run Coverage
 
@@ -32,15 +32,15 @@ Priority order:
 Rules:
 - Tests go in `tests/` mirroring `src/` structure.
 - Use `pytest`. Follow existing fixture and parametrize patterns in the project.
-- Mock external dependencies (file I/O, network calls, CUDA devices with `@pytest.mark.skipif`).
-- For ML models: assert output **shape**, not exact values (unless testing a known formula).
-- Mark slow or GPU-requiring tests with `@pytest.mark.slow` or `@pytest.mark.gpu`.
+- Mock external dependencies: file I/O, network calls. Guard CUDA with `@pytest.mark.skipif`.
+- ML models: assert output **shape**, not exact values, unless testing a known formula.
+- Mark slow and GPU tests `@pytest.mark.slow` and `@pytest.mark.gpu`.
 
 ## Step 4: Verify
 
-1. Run the full test suite, all tests must pass.
-2. Re-run coverage, verify improvement.
-3. If still below 80% on a specific file, explain why (e.g., dead code path, GPU-only branch).
+1. Run the full suite. All tests must pass.
+2. Re-run coverage.
+3. If a file is still below 80%, say why (dead code path, GPU-only branch).
 
 ## Step 5: Report
 

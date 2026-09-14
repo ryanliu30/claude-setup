@@ -4,7 +4,7 @@ description: Deep Python-specific code review using static analysis tools.
 context: fork
 ---
 
-Find modified `.py` files and perform a thorough Python code review.
+Review the modified `.py` files.
 
 ## Step 1: Find Changed Files
 
@@ -18,7 +18,7 @@ If no Python files changed, say so and stop.
 
 ## Step 2: Run Static Analysis
 
-Run the following tools (skip gracefully if not installed):
+Run these, skipping any that are not installed:
 
 ```bash
 pre-commit run --files <files>   # ruff check, ruff format, cython-lint via the repo's hooks
@@ -39,7 +39,7 @@ bandit -r <files> -ll            # security scan, low severity and above (if ins
 - Mutable default arguments (`def f(x=[])`)
 - Bare `except: pass` or exception swallowing
 - File/resource not closed properly (missing `with`)
-- Undeterministic ML operations without seed
+- Nondeterministic ML operations without seed
 
 **MEDIUM** (consider fixing):
 - PEP 8 / ruff violations not auto-fixed
@@ -49,7 +49,7 @@ bandit -r <files> -ll            # security scan, low severity and above (if ins
 - `for i in range(len(x))` instead of `for item in x`
 
 **LOW** (optional):
-- Cosmetic style, variable naming preferences.
+- Cosmetic style, naming preferences.
 
 ## Step 4: Framework-Specific Checks
 

@@ -37,7 +37,7 @@ def test_cosine_similarity_orthogonal():
     assert result == pytest.approx(0.0)
 ```
 
-Descriptive test names explain the behavior:
+Test names describe the behavior:
 ```
 test_returns_empty_when_no_samples_match
 test_raises_value_error_on_negative_input
@@ -68,7 +68,7 @@ def tmp_checkpoint(tmp_path):
     return p
 ```
 
-Fixture scopes: `function` (default) → `module` → `session`. Use `session` for expensive resources like model loads.
+Fixture scopes: `function` (default) → `module` → `session`. `session` for expensive resources such as model loads.
 
 ---
 
@@ -139,7 +139,7 @@ def test_loss_decreases_on_tiny_batch():
     assert losses[-1] < losses[0], "loss did not decrease"
 ```
 
-**Use synthetic data only, never real data in tests.**
+**Synthetic data only. Never real data in tests.**
 
 ---
 

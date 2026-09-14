@@ -112,7 +112,7 @@ TEST(TrainerTest, SavesCheckpointAfterEpoch) {
 - Mock, verify interactions (call count, args)
 - Fake, stateful behavior with realistic responses (e.g., in-memory store)
 
-Prefer **dependency injection** (pass as constructor arg) over global state to enable isolation:
+Inject dependencies through the constructor, not global state:
 
 ```cpp
 // Good: injectable
@@ -213,7 +213,7 @@ genhtml coverage.info --output-directory coverage_html
 
 ## Critical Guardrails
 
-- **Never** use `sleep()` for synchronization, use condition variables or `std::latch`.
-- Generate unique temp directories per test (`std::filesystem::temp_directory_path() / unique_name()`); clean up in `TearDown`.
-- **Never** depend on wall-clock time or external network in unit tests.
+- **Never** synchronize with `sleep()`. Use condition variables or `std::latch`.
+- One unique temp directory per test (`std::filesystem::temp_directory_path() / unique_name()`), cleaned up in `TearDown`.
+- **Never** depend on wall-clock time or the network in unit tests.
 - Run sanitizers in every CI pipeline.

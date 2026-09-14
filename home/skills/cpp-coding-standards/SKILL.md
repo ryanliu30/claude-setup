@@ -16,10 +16,10 @@ origin: affaan-m/everything-claude-code (adapted)
 ## Six Core Principles
 
 1. **RAII**: bind resource lifetime to object lifetime
-2. **Immutability first**: `const`/`constexpr` by default; mutation is exceptional
+2. **Immutability first**: `const`/`constexpr` by default
 3. **Type safety**: use the type system to catch errors at compile time
 4. **Clear intent**: names and types communicate purpose
-5. **Simplicity**: simple code is more likely to be correct
+5. **Simplicity**
 6. **Values over pointers**: prefer returning values and scoped objects
 
 ---
@@ -33,13 +33,13 @@ No raw `new`/`delete`:
 auto buf   = std::make_unique<float[]>(n);
 auto model = std::make_shared<Model>(config);
 
-// Bad, never do this
+// Bad
 float* buf = new float[n];
 ```
 
 Ownership semantics:
 - `std::unique_ptr`: exclusive ownership (default)
-- `std::shared_ptr`: shared (only when truly needed; has overhead)
+- `std::shared_ptr`: shared, only when needed
 - Raw pointer / reference, non-owning view only
 
 ---
@@ -79,7 +79,7 @@ Always initialize variables. Prefer brace initialization `{}`. Use `nullptr` not
 
 ## Classes
 
-Apply **Rule of Zero** (let compiler generate special members) or **Rule of Five** (define all five if managing resources):
+**Rule of Zero** (compiler-generated special members) or **Rule of Five** (define all five when managing resources):
 
 ```cpp
 class Buffer {
@@ -132,7 +132,7 @@ shared_data_.push_back(item);
 mtx_.unlock();  // won't run if exception thrown
 ```
 
-Avoid lock-free programming unless profiling proves it necessary.
+No lock-free programming unless profiling demands it.
 
 ---
 

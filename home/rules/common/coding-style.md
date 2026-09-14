@@ -4,7 +4,7 @@ Universal principles, extended by language-specific files.
 
 ## Core Mandate
 
-Prefer immutability: create new objects instead of mutating existing ones. Prevents hidden side effects and enables safer concurrency.
+Prefer immutability: create new objects instead of mutating existing ones.
 
 ## Design Principles
 
@@ -14,14 +14,14 @@ Prefer immutability: create new objects instead of mutating existing ones. Preve
 
 ## File Structure
 
-- Target 200–400 lines per file. 800 is an absolute ceiling.
+- Target 200–400 lines per file. 800 is the ceiling.
 - Organize by feature domain, not by type (e.g., `models/`, not `classes/`).
-- Multiple focused files outperform monolithic ones.
+- Prefer several focused files to one large one.
 
 ## Error Handling
 
-- Handle errors comprehensively at system boundaries (user input, file I/O, external APIs).
-- Never silently swallow exceptions (`except: pass` is always wrong).
+- Handle errors at system boundaries: user input, file I/O, external APIs.
+- Never silently swallow exceptions. `except: pass` is always wrong.
 - Validate all external data; trust internal code and framework guarantees.
 - When catching to add context: `raise NewError("...") from e`.
 
@@ -34,22 +34,24 @@ Prefer immutability: create new objects instead of mutating existing ones. Preve
 
 ## Red Flags
 
-- Nesting deeper than 4 levels, extract to a function.
-- Functions exceeding 50 lines, split responsibility.
-- Magic numbers without explanation, use named constants.
+- Nesting deeper than 4 levels: extract a function.
+- Functions over 50 lines: split responsibility.
+- Magic numbers: use named constants.
 - Mutation of function arguments.
 
 ## Comments
 
-Write no comments by default. Add one only when the WHY is non-obvious: a hidden constraint, a workaround for a specific bug, a subtle invariant. Never explain WHAT the code does.
+No comments by default. Add one only when the WHY is non-obvious: a hidden constraint, a
+workaround for a specific bug, a subtle invariant. Never explain WHAT the code does.
 
 ## Typing
 
-- Use type hints extensively throughout your Python implementation. 
-- Avoid using Any or Optional, infer the type by checking the references to the methods.
-- When more than three types are possible, instead of using |, create new container dataclass or separate the methods
+- Type-hint every function.
+- No `Any` or `Optional`. Infer the type from the call sites.
+- When more than three types are possible, use a container dataclass or split the method instead
+  of a `|` union.
 
 ## Documentation
 
-- In all source code files, there should be a README.md summarizing the data flow and the public methods.
-- Whenever a file is updated, check README to see if any changes are required for the README documentation.
+- Every source directory has a README.md summarizing its data flow and public methods.
+- After editing a file, update its README if the change affects it.

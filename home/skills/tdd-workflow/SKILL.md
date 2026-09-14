@@ -17,7 +17,7 @@ origin: affaan-m/everything-claude-code (adapted for ML)
 
 ## Step 1: Specify Behavior
 
-Before writing any test or code, write down (in a comment or docstring) what the unit should do:
+Before any test or code, write down in a comment or docstring what the unit should do:
 - Input/output contract
 - Edge cases (empty batch, single element, dtype mismatch)
 - Shape invariants for tensor-returning code (e.g., `# (B, T, D) -> (B, D)`)
@@ -26,7 +26,7 @@ Before writing any test or code, write down (in a comment or docstring) what the
 
 ## Step 2 (RED): Write Failing Tests
 
-Write tests **before** touching production code. All three levels are required for non-trivial features:
+Tests come before production code. Non-trivial features need all three levels:
 
 **Unit**, single function or class in isolation:
 ```python
@@ -67,14 +67,14 @@ def test_loss_decreases_on_tiny_batch():
 
 ## Step 3: Confirm RED State
 
-Run the tests **and verify they fail for the right reason** (missing implementation, not a syntax error or import failure):
+Run the tests. They must fail for the right reason: missing implementation, not a syntax error or import failure.
 
 ```bash
 pytest tests/path/to/new_test.py -v
 # Expected: FAILED, not ERROR
 ```
 
-If any test errors instead of fails, fix the test scaffolding before continuing. Do not proceed to Step 4 until all new tests show `FAILED`.
+If a test errors instead of failing, fix the scaffolding. Do not proceed until every new test shows `FAILED`.
 
 **Git checkpoint after RED validation:**
 ```bash
@@ -86,13 +86,10 @@ git commit -m "test: add failing tests for <feature>"
 
 ## Step 4 (GREEN): Write Minimal Implementation
 
-Write the **minimum** code to make the tests pass. No premature optimization, no extra features.
-
-Rules during GREEN:
+Write the **minimum** code that passes. During GREEN:
 - No new tests
 - No refactoring
 - No performance work
-- Aim for correctness only
 
 ```bash
 pytest tests/path/to/new_test.py -v
@@ -109,21 +106,21 @@ git commit -m "feat: implement <feature> (tests passing)"
 
 ## Step 5: Verify Full Suite Passes
 
-Run the full test suite to catch regressions:
+Run the full suite:
 ```bash
 pytest -m "not slow and not gpu" -x
 ```
 
-Fix any regressions before moving to Step 6.
+Fix regressions before Step 6.
 
 ---
 
 ## Step 6 (REFACTOR): Improve Code Quality
 
-With a green test suite as a safety net, refactor for:
-- Clarity (naming, structure, docstrings)
-- Elimination of duplication (extract if pattern appears 3+ times)
-- Performance (only if profiled, no premature optimization)
+Refactor for:
+- Clarity: naming, structure, docstrings
+- Duplication: extract patterns that appear 3+ times
+- Performance: only when profiled
 - Type hint completeness
 
 Re-run tests after every meaningful change:
@@ -145,17 +142,17 @@ git commit -m "refactor: clean up <feature> implementation"
 pytest --cov=src --cov-report=term-missing --cov-fail-under=80
 ```
 
-Target: **80%+ overall**, **100% on critical paths** (loss functions, data transforms, metric computations). If below 80%, add targeted tests for uncovered branches before considering the task done.
+Target: **80%+ overall**, **100% on critical paths** (loss functions, data transforms, metrics). Below 80%, add tests for the uncovered branches before the task is done.
 
 ---
 
 ## ML-Specific Rules
 
-- **Synthetic data only** in tests, never load real datasets or checkpoints.
-- **Test shapes, not exact floats**: use `pytest.approx` with tolerance only when the value is analytically known.
-- **GPU tests are opt-in**: mark `@pytest.mark.gpu` and guard with `@pytest.mark.skipif(not torch.cuda.is_available(), ...)`.
-- **Slow tests are opt-in**: mark `@pytest.mark.slow` for anything > ~5 seconds.
-- Always document tensor shapes in test assertions: `assert out.shape == (B, T, D)  # (batch, seq, hidden)`.
+- **Synthetic data only.** Never load real datasets or checkpoints.
+- **Test shapes, not exact floats.** `pytest.approx` with tolerance only when the value is analytically known.
+- **GPU tests are opt-in**: `@pytest.mark.gpu` plus `@pytest.mark.skipif(not torch.cuda.is_available(), ...)`.
+- **Slow tests are opt-in**: `@pytest.mark.slow` for anything over about 5 seconds.
+- Document tensor shapes in assertions: `assert out.shape == (B, T, D)  # (batch, seq, hidden)`.
 
 ---
 

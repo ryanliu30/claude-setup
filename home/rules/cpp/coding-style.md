@@ -18,10 +18,10 @@ paths:
 
 ## Modern C++ (C++17/20)
 
-- Use `auto` when the type is obvious from context; avoid it when it obscures the type.
+- `auto` only when the type is obvious from context.
 - `constexpr` for compile-time constants; `const` for runtime constants.
 - Structured bindings: `auto [key, val] = map_entry;`
-- Range-based for loops over indexed loops when index is not needed.
+- Range-based for loops unless the index is needed.
 - `std::optional<T>` instead of sentinel values or out-parameters.
 - `std::string_view` for non-owning string references.
 
@@ -34,15 +34,15 @@ No manual `new`/`delete`:
 auto buf = std::make_unique<float[]>(n);
 auto model = std::make_shared<Model>(config);
 
-// Bad, never do this
+// Bad
 float* buf = new float[n];
 ```
 
 ## Ownership Semantics
 
 - `std::unique_ptr`: exclusive ownership (default choice).
-- `std::shared_ptr`: shared ownership (only when truly needed; has overhead).
-- Raw pointers / references, non-owning views only (caller retains ownership).
+- `std::shared_ptr`: shared ownership, only when needed.
+- Raw pointers and references: non-owning views only.
 
 ## Naming Conventions
 
@@ -56,14 +56,14 @@ float* buf = new float[n];
 
 ## Formatting
 
-Use `clang-format`. Commit a `.clang-format` file to the project root. Run before committing:
+Use `clang-format` with a `.clang-format` file at the project root. Run before committing:
 ```bash
 clang-format -i src/**/*.cpp include/**/*.hpp
 ```
 
 ## Error Handling
 
-- Use exceptions for truly exceptional conditions, not for flow control.
+- Exceptions for exceptional conditions, not flow control.
 - Prefer `std::expected<T, E>` (C++23) or `std::optional<T>` for expected failures.
 - Never catch `...` without re-throwing.
 
@@ -89,16 +89,16 @@ def dot_product(
 ```
 
 Rules:
-- Always use typed memoryviews (`double[::1]`, `float[:, ::1]`) for array arguments.
+- Typed memoryviews (`double[::1]`, `float[:, ::1]`) for array arguments.
 - `cdef` for C-only functions (not callable from Python).
-- `cpdef` only when Python access is truly needed (adds overhead).
-- Wrap C++ classes with `cdef class` wrappers; expose only what Python needs.
+- `cpdef` only when Python access is needed.
+- Wrap C++ classes in `cdef class`; expose only what Python needs.
 - Use `with nogil:` for long-running C/C++ calls that don't touch Python objects.
 - Test both the Cython path and a pure-Python fallback when one exists.
 
 ## Build Integration
 
-For Python extensions, prefer `scikit-build-core` or `meson-python` over `setup.py` for new projects. CMake for standalone C++ libraries.
+New Python extensions use `scikit-build-core` or `meson-python`, not `setup.py`. Standalone C++ libraries use CMake.
 
 ```toml
 # pyproject.toml

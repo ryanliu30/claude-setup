@@ -23,7 +23,7 @@ class Dataset(Protocol):
 
 ## ML Configuration, Hydra + OmegaConf
 
-Use **Hydra** for ML config management. Define structured configs as plain `@dataclass` (no `frozen=True`, Hydra requires mutability for config composition and override):
+ML config goes through **Hydra**. Structured configs are plain `@dataclass`, not frozen, since Hydra composes and overrides by mutation:
 
 ```python
 from dataclasses import dataclass, field
@@ -51,13 +51,13 @@ def main(cfg: DictConfig) -> None:
     print(cfg.train.lr)   # override via CLI: train.lr=1e-3
 ```
 
-Access runtime config as `DictConfig`; convert to a typed object with `OmegaConf.structured()` when needed. Never use bare `argparse` dicts or `pydantic` models for ML config.
+Access runtime config as `DictConfig`; convert with `OmegaConf.structured()` when a typed object is needed. No `argparse` dicts or `pydantic` models for ML config.
 
-Use plain `@dataclass` (without Hydra) only for non-config data containers (DTOs, result structs). For those, `frozen=True` is appropriate.
+`@dataclass(frozen=True)` is for non-config containers: DTOs, result structs.
 
 ## Context Managers
 
-Use `contextlib.contextmanager` for resource management:
+`contextlib.contextmanager` for resource management:
 
 ```python
 from contextlib import contextmanager

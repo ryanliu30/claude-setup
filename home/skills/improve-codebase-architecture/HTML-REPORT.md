@@ -1,6 +1,6 @@
 # HTML Report Format
 
-The architectural review is rendered as a single self-contained HTML file in the OS temp directory. Tailwind and Mermaid both come from CDNs. Mermaid handles graph-shaped diagrams reliably; hand-built divs and inline SVG handle the more editorial visuals (mass diagrams, cross-sections). Mix the two: don't lean on Mermaid for everything, it'll start to look generic.
+One self-contained HTML file in the OS temp directory. Tailwind and Mermaid come from CDNs. Mermaid for graph-shaped diagrams; hand-built divs and inline SVG for mass diagrams and cross-sections. Mix the two.
 
 ## Scaffold
 
@@ -35,32 +35,32 @@ The architectural review is rendered as a single self-contained HTML file in the
 
 ## Header
 
-Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick dark box = deep module. No introduction paragraph. Straight into the candidates.
+Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick dark box = deep module. No introduction. Straight into the candidates.
 
 ## Candidate card
 
-The diagrams carry the weight. Prose is sparse, plain, and uses the glossary terms from SKILL.md without ceremony.
+The diagrams carry the weight. Prose is sparse and uses the glossary terms from SKILL.md.
 
 Each candidate is one `<article>`:
 
-- **Title**: short, names the deepening (e.g. "Collapse the Order intake pipeline").
+- **Title**: names the deepening, e.g. "Collapse the Order intake pipeline".
 - **Badge row**: recommendation strength (`Strong` = emerald, `Worth exploring` = amber, `Speculative` = slate), plus a tag for how the module's dependencies are handled at the seam (`in-process`, `local-substitutable`, `ports & adapters`, `mock`).
 - **Files**: monospaced list, `font-mono text-sm`.
-- **Before / After diagram**: the centrepiece. Two columns, side by side. See patterns below.
+- **Before / After diagram**: two columns, side by side. Patterns below.
 - **Problem**: one sentence. What hurts.
 - **Solution**: one sentence. What changes.
 - **Wins**: bullets, ≤6 words each. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow wrappers".
 - **ADR callout** (if applicable): one line in an amber-tinted box.
 
-No paragraphs of explanation. If the diagram needs a paragraph to be understood, redraw the diagram.
+No paragraphs. If the diagram needs one, redraw the diagram.
 
 ## Diagram patterns
 
-Pick the pattern that fits the candidate. Mix them. Don't make every diagram look the same. Variety is part of the point.
+Pick the pattern that fits the candidate. Vary them.
 
 ### Mermaid graph (the workhorse for dependencies / call flow)
 
-Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and look at the mess." Wrap it in a Tailwind-styled card so it doesn't feel parachuted in. Style with classDef to colour leakage edges red and the deep module dark. Sequence diagrams work well for "before: 6 round-trips; after: 1."
+A Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z." Wrap it in a Tailwind card. Use classDef to colour leakage edges red and the deep module dark. Sequence diagrams suit "before: 6 round-trips; after: 1."
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">
@@ -77,7 +77,7 @@ Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and l
 
 ### Hand-built boxes-and-arrows (when Mermaid's layout fights you)
 
-Modules as `<div>`s with borders and labels. Arrows as inline SVG `<line>` or `<path>` elements positioned absolutely over a relative container. Reach for this when you want the "after" diagram to feel like one thick-bordered deep module with greyed-out internals, since Mermaid won't render that with the right weight.
+Modules as bordered, labelled `<div>`s. Arrows as inline SVG `<line>` or `<path>` positioned absolutely over a relative container. Use this when the "after" diagram is one thick-bordered deep module with greyed-out internals; Mermaid cannot render that weight.
 
 ### Cross-section (good for layered shallowness)
 
@@ -93,19 +93,19 @@ Before: a tree of function calls rendered as nested boxes. After: the same tree 
 
 ## Style guidance
 
-- Lean editorial, not corporate-dashboard. Generous whitespace. Serif optional for headings (`font-serif` works well with stone/slate).
+- Editorial, not dashboard. Generous whitespace. `font-serif` headings optional.
 - Colour sparingly: one accent (emerald or indigo) plus red for leakage and amber for warnings.
 - Keep diagrams ~320px tall so before/after sits comfortably side by side without scrolling.
-- Use `text-xs uppercase tracking-wider` for module labels inside diagrams, so they read as schematic, not as UI.
-- The only scripts are the Tailwind CDN and the Mermaid ESM import. The report is otherwise static: no app code, no interactivity beyond Mermaid's own rendering.
+- `text-xs uppercase tracking-wider` for module labels inside diagrams.
+- The only scripts are the Tailwind CDN and the Mermaid ESM import. No other interactivity.
 
 ## Top recommendation section
 
-One larger card. Candidate name, one sentence on why, anchor link to its card. That's it.
+One larger card: candidate name, one sentence on why, anchor link to its card.
 
 ## Tone
 
-Plain English, concise, but the architectural nouns and verbs come straight from the Vocabulary section of [SKILL.md](SKILL.md). Concision is not an excuse to drift.
+Plain English. Architectural nouns and verbs come from the Vocabulary section of [SKILL.md](SKILL.md).
 
 **Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
 
@@ -118,6 +118,6 @@ Plain English, concise, but the architectural nouns and verbs come straight from
 - "Deepen: one interface, one place to test."
 - "Two adapters justify the seam: HTTP in prod, in-memory in tests."
 
-**Wins bullets** name the gain in glossary terms: *"locality: bugs concentrate in one module"*, *"leverage: one interface, N call sites"*, *"interface shrinks; implementation absorbs the wrappers"*. Don't write *"easier to maintain"* or *"cleaner code"*, because those terms aren't in the glossary and don't earn their place.
+**Wins bullets** name the gain in glossary terms: *"locality: bugs concentrate in one module"*, *"leverage: one interface, N call sites"*, *"interface shrinks; implementation absorbs the wrappers"*. Not *"easier to maintain"* or *"cleaner code"*.
 
-No hedging, no throat-clearing, no "it's worth noting that…". If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a term isn't in the glossary, reach for one that is before inventing a new one.
+No hedging, no "it's worth noting that…". If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. Prefer a glossary term to a new one.

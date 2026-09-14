@@ -13,7 +13,7 @@ origin: DietrichGebert/ponytail v4.7.0 (adapted)
 ---
 
 Review diffs for unnecessary complexity. One line per finding: location, what
-to cut, what replaces it. The diff's best outcome is getting shorter.
+to cut, what replaces it.
 
 ## Format
 
@@ -51,8 +51,7 @@ If there is nothing to cut, say `Lean already. Ship.` and stop.
 
 ## Boundaries
 
-Complexity only, correctness bugs, security holes, and performance go to a
-normal review pass, not this one. A single smoke test or `assert`-based
-self-check is the ponytail minimum, not bloat, never flag it for deletion.
-Does not apply the fixes, only lists them.
-"stop ponytail-review" or "normal mode": revert to verbose review style.
+Complexity only. Correctness bugs, security holes, and performance go to a
+normal review pass. A single smoke test or `assert`-based self-check is the
+ponytail minimum; never flag it for deletion. Lists fixes, applies none.
+"stop ponytail-review" or "normal mode": revert to normal review.

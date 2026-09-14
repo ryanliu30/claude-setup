@@ -13,8 +13,8 @@ All three test levels are required:
 and bug fixes start with a failing test. **Advisory** for scripts, notebooks, and exploratory
 work, where one assert-based check is enough.
 
-1. RED: write the test first, run it, and confirm it FAILS rather than errors.
-2. GREEN: write the minimal implementation, run it, and confirm it PASSES.
+1. RED: write the test, run it, confirm it FAILS rather than errors.
+2. GREEN: write the minimal implementation, run it, confirm it PASSES.
 3. REFACTOR: improve the code with the green suite as the safety net.
 4. Gate: `pytest --cov=src --cov-fail-under=80` must pass before the task is done.
 
@@ -35,7 +35,7 @@ def test_cosine_similarity_orthogonal_vectors():
 
 ## Test Naming
 
-Use descriptive names that explain the behavior:
+Names describe the behavior:
 ```
 test_returns_empty_when_no_samples_match
 test_raises_value_error_on_negative_input
@@ -44,14 +44,14 @@ test_forward_pass_produces_correct_output_shape
 
 ## ML-Specific Rules
 
-- Test output **shapes**, not exact float values (use `pytest.approx` with tolerance when values matter).
-- Mark GPU tests: `@pytest.mark.gpu` and skip in CI without GPU: `@pytest.mark.skipif(not torch.cuda.is_available(), reason="no GPU")`.
-- Mark slow tests: `@pytest.mark.slow`, exclude from default run with `pytest -m "not slow"`.
-- Always test with a **small synthetic dataset** (e.g., batch of 4, sequence length 8); never use real data in tests.
-- Test that training loss decreases over 5–10 steps on a small overfit case (sanity check).
+- Test output **shapes**, not exact floats. Use `pytest.approx` with tolerance when values matter.
+- Mark GPU tests `@pytest.mark.gpu` and skip without a GPU: `@pytest.mark.skipif(not torch.cuda.is_available(), reason="no GPU")`.
+- Mark slow tests `@pytest.mark.slow`; the default run is `pytest -m "not slow"`.
+- Use a **small synthetic dataset** (batch of 4, sequence length 8). Never use real data in tests.
+- Check that training loss decreases over 5–10 steps on a small overfit case.
 
 ## Troubleshooting
 
-- Check test isolation first, shared mutable state causes flaky tests.
+- Check test isolation first; shared mutable state causes flaky tests.
 - Verify mock return values match real object interfaces.
 - Fix the implementation if the test is correct; fix the test if the expected value was stale.

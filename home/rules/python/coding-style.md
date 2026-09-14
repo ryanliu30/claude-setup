@@ -12,7 +12,7 @@ paths:
 
 - **PEP 8**: enforced by `ruff`.
 - **Type annotations** on all public function signatures. Use `from __future__ import annotations` for forward references.
-- **Python ≥3.10** syntax preferred: `X | Y` unions, `match` statements where appropriate.
+- **Python ≥3.10** syntax: `X | Y` unions, `match` where it fits.
 
 ## Immutability
 
@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from typing import NamedTuple
 
 @dataclass(frozen=True)
-class ModelSpec:       # DTO, immutable is appropriate here
+class ModelSpec:
     hidden_dim: int
     num_layers: int
     dropout: float = 0.1
@@ -33,11 +33,11 @@ class Batch(NamedTuple):
     labels: torch.Tensor   # (B,)
 ```
 
-**Exception, ML training configs**: use Hydra + OmegaConf structured configs (`@dataclass` without `frozen=True`). Hydra requires mutability for config composition and CLI overrides. See `rules/python/patterns.md`.
+**Exception, ML training configs**: Hydra + OmegaConf structured configs, `@dataclass` without `frozen=True`, since Hydra composes and overrides configs by mutation. See `rules/python/patterns.md`.
 
 ## Formatting Toolchain
 
-Pre-commit hooks (run automatically on commit):
+Pre-commit hooks, run by git on commit:
 
 | Hook | Command | Scope |
 |------|---------|-------|
@@ -45,9 +45,9 @@ Pre-commit hooks (run automatically on commit):
 | `ruff-format` | `ruff format` | `src/` Python files |
 | `cython-lint` | `cython-lint` | all `.pyx` files |
 
-`ruff` handles both formatting and linting; no `black`, no `isort`, no separate flake8. Do not introduce those tools or suggest them.
+`ruff` formats and lints. Do not introduce `black`, `isort`, or `flake8`.
 
-To run manually before committing, go through pre-commit, never the tools directly:
+Run manually through pre-commit only:
 ```bash
 pre-commit run --all-files
 pre-commit run --files src/model.py tests/test_model.py
@@ -55,7 +55,7 @@ pre-commit run --files src/model.py tests/test_model.py
 
 ## ML / NumPy Conventions
 
-- Document tensor shapes in the first docstring line when non-obvious:
+- Document tensor shapes in the docstring when non-obvious:
   ```python
   def attention(q: Tensor, k: Tensor, v: Tensor) -> Tensor:
       """Scaled dot-product attention.
@@ -68,20 +68,18 @@ pre-commit run --files src/model.py tests/test_model.py
           Output tensor of shape (B, H, T, D).
       """
   ```
-- Use `einops.rearrange`/`einops.reduce` for readable tensor manipulation.
-- Use `@torch.no_grad()` decorator for inference/evaluation methods.
+- `einops.rearrange`/`einops.reduce` for tensor manipulation.
+- `@torch.no_grad()` on inference and evaluation methods.
 
 ## Docstrings
 
-Google style. **After every edit to a source file, verify that all three levels of docstring are accurate. This is mandatory, not optional.**
+Google style. After every edit to a source file, check all three levels:
 
-### After every source file edit
+1. **Module**: the summary still describes the file, and the public API list, if present, matches the current symbols.
+2. **Class**: the description, `Attributes:`, and examples match the current fields and responsibilities.
+3. **Function**: `Args:`, `Returns:`, and `Raises:` match the current signature and behavior.
 
-1. **Module docstring**: top of file. Check that the summary still describes the file's purpose and that the public API list (if present) reflects any added/removed/renamed symbols.
-2. **Class docstring**: below `class` line. Check that the description, `Attributes:`, and any usage examples still match the class's current responsibilities and fields.
-3. **Method/function docstring**: check that `Args:`, `Returns:`, and `Raises:` match the current signature and behavior. Update if parameters were added, removed, renamed, or changed type.
-
-If a docstring is missing where one is required (see below), add it.
+Add any docstring that is missing where required.
 
 ### When docstrings are required
 
@@ -127,5 +125,4 @@ def load_checkpoint(path: str, device: str = "cpu") -> dict:
     """
 ```
 
-- Tensor shapes go in `Args:`/`Returns:` inline: `q: Query of shape (B, H, T, D).`
-- Skip docstrings for trivial getters and private one-liners.
+Tensor shapes go inline in `Args:`/`Returns:`: `q: Query of shape (B, H, T, D).`

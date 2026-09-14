@@ -37,6 +37,6 @@ End with `net: -<N> lines, -<M> deps possible.` Nothing to cut: `Lean already. S
 
 ## Boundaries
 
-Complexity only, correctness bugs, security holes, and performance go to a
+Complexity only. Correctness bugs, security holes, and performance go to a
 normal review pass. Lists findings, applies nothing. One-shot.
 "stop ponytail-audit" or "normal mode" to revert.

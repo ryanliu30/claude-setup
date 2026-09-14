@@ -1,6 +1,6 @@
 # Performance
 
-Profile before optimizing. Measure, then fix.
+Profile before optimizing.
 
 ## Profiling Tools
 
