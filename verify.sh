@@ -45,44 +45,9 @@ check $? "no CLAUDE_TOOL_INPUT_COMMAND (hooks read stdin JSON, not env vars)"
 ! grep -q "PreToolUse" home/settings.json
 check $? "no PreToolUse hook (git's pre-commit hook enforces commits)"
 
-echo "hooks"
-# Every hook settings.json names must exist and be executable, and every shipped hook must be
-# wired up. A path typo or a lost +x bit fails silently at runtime, which is how the last hook
-# no-opped for months.
-python3 - <<'PY2' 2>/dev/null
-import json, os, sys
-
-settings = json.load(open("home/settings.json"))
-wired = set()
-for event, groups in settings.get("hooks", {}).items():
-    if event == "PreToolUse":
-        sys.exit("PreToolUse is rejected above")
-    for group in groups:
-        for handler in group.get("hooks", []):
-            cmd = handler.get("command", "")
-            if "/hooks/" not in cmd:
-                continue
-            name = cmd.rsplit("/hooks/", 1)[1].strip('"')
-            wired.add(name)
-            path = os.path.join("home/hooks", name)
-            assert os.path.isfile(path), f"{event} points at missing {path}"
-            assert os.access(path, os.X_OK), f"{path} is not executable"
-
-shipped = {f for f in os.listdir("home/hooks") if f.endswith(".sh")}
-assert shipped == wired, f"shipped {sorted(shipped)} but settings.json wires {sorted(wired)}"
-PY2
-check $? "every hook exists, is executable, and is wired up in settings.json"
-
-# The mode gate has to be in the script: a hook entry with `if` set never runs on a non-tool
-# event like UserPromptSubmit.
-! grep -q '"if"' home/settings.json
-check $? "no if field on hook entries (only evaluated on tool events)"
-
-printf '%s' '{"permission_mode":"plan"}' | ./home/hooks/plan-grill.sh | grep -q grilling
-check $? "plan-grill.sh injects the grill-first rule in plan mode"
-
-[ -z "$(printf '%s' '{"permission_mode":"auto"}' | ./home/hooks/plan-grill.sh)" ]
-check $? "plan-grill.sh stays silent outside plan mode"
+# Planning offers the grilling and the user decides; nothing forces it from a hook.
+! grep -q '"hooks"' home/settings.json && [ ! -d home/hooks ]
+check $? "no hooks shipped (planning.md offers the grilling instead of a hook forcing it)"
 
 effort=$(sed -n 2p <<<"$values")
 case "$effort" in low|medium|high|xhigh|max) ok "effortLevel: $effort" ;;
@@ -138,8 +103,8 @@ for name in commit check; do
   check $? "$name is user-invoked only (disable-model-invocation)"
 done
 
-# Two independent paths get grilling to fire in plan mode: the description, which is what skill
-# selection reads, and plan-grill.sh. rules/common/planning.md alone was not enough.
+# Skill selection reads the description, so it has to say when plan mode calls for the skill:
+# after the user accepts the offer that rules/common/planning.md makes.
 grep -q "^description:.*plan mode" home/skills/grilling/SKILL.md
 check $? "grilling names plan mode in its description (that is what skill selection reads)"
 

@@ -28,22 +28,18 @@ mkdir -p "$TARGET"
 
 # Markdown trees: copy in place. No --delete, it would silently remove rules or skills that
 # exist only on this machine; orphans are reported below instead.
-for dir in rules skills hooks; do
+for dir in rules skills; do
   mkdir -p "$TARGET/$dir"
   cp -R "$SRC/$dir/." "$TARGET/$dir/"
 done
 cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
-
-# settings.json points at these by absolute path, and git only tracks the executable bit, so a
-# curl-pipe install from a tarball or a copy across filesystems can land them non-executable.
-chmod +x "$TARGET"/hooks/*.sh
 
 # The repo owns settings.json outright, so it is copied like everything else. Anything set
 # through /config (enabledPlugins, extraKnownMarketplaces) is reset on every install.
 cp "$SRC/settings.json" "$TARGET/settings.json"
 
 # Report files present in ~/.claude but not in the repo, so they get deleted deliberately.
-for dir in rules skills hooks; do
+for dir in rules skills; do
   while IFS= read -r rel; do
     [ -e "$SRC/$dir/$rel" ] || echo "  ⚠ orphan: $TARGET/$dir/$rel (not in repo, delete if stale)"
   done < <(cd "$TARGET/$dir" && find . -type f \( -name '*.md' -o -name '*.sh' \) | sed 's|^\./||')
@@ -64,13 +60,15 @@ if command -v claude >/dev/null 2>&1; then
   claude plugin marketplace remove ponytail >/dev/null 2>&1 || true
 fi
 rm -f "$TARGET/.ponytail-active"
+# 4. plan-grill.sh forced the grilling skill in plan mode. Planning now offers it instead.
+rm -f "$TARGET/hooks/plan-grill.sh"
+rmdir "$TARGET/hooks" 2>/dev/null || true
 
 echo "✓ Done. Files installed to $TARGET"
 echo ""
 echo "  CLAUDE.md     → global guidelines"
 echo "  settings.json → permissions (allow/ask/deny), defaultMode, effortLevel, attribution, replaces your file"
 echo "  rules/        → coding standards for Python, C++, and common practices"
-echo "  hooks/        → UserPromptSubmit hook that reasserts grill-first in plan mode"
 echo "  skills/       → <name>/SKILL.md, loaded on demand by name; slash commands:"
 echo "                  /commit /check /ml-review /python-review /cpp-review /build-fix /test-coverage /ponytail"
 echo ""
