@@ -63,6 +63,8 @@ rm -f "$TARGET/.ponytail-active"
 # 4. plan-grill.sh forced the grilling skill in plan mode. Planning now offers it instead.
 rm -f "$TARGET/hooks/plan-grill.sh"
 rmdir "$TARGET/hooks" 2>/dev/null || true
+# 5. domain-modeling was dropped from the repo; remove the installed copy so it stops loading.
+rm -rf "$TARGET/skills/domain-modeling"
 
 echo "✓ Done. Files installed to $TARGET"
 echo ""

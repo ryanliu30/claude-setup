@@ -84,7 +84,6 @@ Reference skills, loaded by Claude when the description matches:
 | `ponytail-review` | Review the current diff for over-engineering, one line per finding |
 | `ponytail-audit` | Scan the whole repo for complexity to trim, ranked biggest cut first |
 | `grilling` | Interview the user round by round until a plan has no unexamined branches |
-| `domain-modeling` | Build and sharpen `CONTEXT.md` and `docs/adr/` as decisions crystallize |
 | `improve-codebase-architecture` | Scan for shallow modules, report the candidates as HTML, then grill one |
 
 No skill here shadows a bundled one. `/plan` and `/code-review` are Claude Code's own: plan mode
@@ -102,7 +101,7 @@ loading on demand rather than always. `/ponytail` sets the intensity for the ses
 Precedence is stated in `home/CLAUDE.md`: the skill governs how much code to write, and the test
 rules still bind for library code under `src/`.
 
-`grilling`, `domain-modeling`, and `improve-codebase-architecture` are vendored from
+`grilling` and `improve-codebase-architecture` are vendored from
 [mattpocock/skills](https://github.com/mattpocock/skills), lightly adapted. The upstream
 `codebase-design` skill is not installed: `improve-codebase-architecture` was its only consumer
 here, so its glossary (module, interface, depth, seam, adapter, leverage, locality) and the

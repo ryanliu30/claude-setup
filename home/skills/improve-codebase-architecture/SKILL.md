@@ -9,7 +9,7 @@ disable-model-invocation: true
 Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones, for testability and navigability.
 
 - The **Vocabulary** section below is the architecture language. Use those terms exactly; never "component," "service," "API," or "boundary."
-- `CONTEXT.md` names the domain; ADRs in `docs/adr/` record decisions not to reopen. Call the Skill tool with "domain-modeling" when either needs writing or sharpening.
+- `CONTEXT.md` names the domain; ADRs in `docs/adr/` record decisions not to reopen.
 
 ## Vocabulary
 
@@ -89,7 +89,7 @@ Do not propose interfaces yet. After writing the file, ask: "Which of these woul
 
 When the user picks a candidate, call the Skill tool with "grilling" to walk the decision tree: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
-Update the domain model inline as decisions settle, through the Skill tool with "domain-modeling":
+Update the domain model inline as decisions settle:
 
 - **Deepened module named after a concept not in `CONTEXT.md`?** Add the term. Create the file if needed.
 - **Fuzzy term sharpened in conversation?** Update `CONTEXT.md` there.
