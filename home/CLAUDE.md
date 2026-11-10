@@ -30,6 +30,8 @@ The standards themselves live in `rules/`: `rules/common/` loads in every sessio
    infer it from the project name.
 3. If that also fails, stop and tell the user what you tried and which environments exist. Do not
    scan the filesystem for conda, and never fall back to the base environment.
+4. Stop background processes you started with TaskStop or `kill <pid>`. Never `pkill` or
+   `killall` by a generic name such as `python` or `node`; it can kill the user's own jobs.
 
 ### 2. Pre-commit
 - Commit enforcement belongs to git. In any repo with `.pre-commit-config.yaml`, run
