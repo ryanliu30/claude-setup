@@ -39,10 +39,11 @@ cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
 cp "$SRC/settings.json" "$TARGET/settings.json"
 
 # Report files present in ~/.claude but not in the repo, so they get deleted deliberately.
+# skills/synced/ holds claude.ai skills that Claude Code syncs itself, so it is not ours to report.
 for dir in rules skills; do
   while IFS= read -r rel; do
     [ -e "$SRC/$dir/$rel" ] || echo "  ⚠ orphan: $TARGET/$dir/$rel (not in repo, delete if stale)"
-  done < <(cd "$TARGET/$dir" && find . -type f \( -name '*.md' -o -name '*.sh' \) | sed 's|^\./||')
+  done < <(cd "$TARGET/$dir" && find . -path ./synced -prune -o -type f \( -name '*.md' -o -name '*.sh' \) -print | sed 's|^\./||')
 done
 
 # Migrations from earlier layouts. Delete each block once every machine has re-run the installer.
